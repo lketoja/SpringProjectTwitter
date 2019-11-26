@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Hello world</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+    <body class="container">
+        <h1 th:text="${user.name}">name</h1>
+        
+        <h2>Tweets</h2>
+        
+        <h3>Add a new tweet!</h3>
+        <form th:action="@{/users/{userId}/add-message (userId=${user.id})}" method="POST">
+            <input type="textarea" name="text" />
+            <input type="submit" value="Add"/>
+        </form>
+        
+        <h3>Most recent tweets</h3>
+        
+        <div th:each="message : ${messages}">
+            <p th:text="${message.text}">text</p>
+            <button>like</button>
+            <form>
+                <input type="text" name="comment" placeholder="add a comment"/>
+                <input type="submit" value="send" />
+            </form>  
+        </div>
+        
+        
+        <h2>Photos</h2>
+        
+        <h3>Add a new photo!</h3>
+        <form th:action="@{/users/{userId}/add-photo (userId=${user.id})}" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" />
+            <input type="text" name="description" placeholder="add description"/>
+            <input type="submit" value="Add" />            
+        </form>
+        
+        <h3>My Photos</h3>
+        
+        <div th:each="photo : ${photos}">
+            <img width="30%" th:src="@{/users/photos/{photoId} (photoId=${photo.id})}"/>
+            <p th:text="${photo.description}">description</p>
+        </div>
+        
+        
+
+       
+
+
+    </body>
+</html>
