@@ -33,6 +33,8 @@ public class Account extends AbstractPersistable<Long> {
     @OneToMany
     private List<WhoFollowsWho> whoFollowsWho;
     
+  
+    
     @OneToMany
     private List<Photo> photos;
     
@@ -44,6 +46,7 @@ public class Account extends AbstractPersistable<Long> {
         this.username = username;
         this.password = password;
         whoFollowsWho = new ArrayList<>();
+     
         photos = new ArrayList<>();
         messages = new ArrayList<>();
     }

@@ -123,6 +123,13 @@ public class UserController {
         return "redirect:/" + user.getUsername();
     }
     
+    @PostMapping("/{userId}/{loggedInUser}/follow-me")
+    public String followMe(@PathVariable Long userId, @PathVariable String loggedInUser){
+        Account userToBeFollowed = userRepo.getOne(userId);
+        Account userWhoFollows = userRepo.findByUsername(loggedInUser);
+        
+        return "redirect:/" + userToBeFollowed.getUsername();
+    }
     
     
     

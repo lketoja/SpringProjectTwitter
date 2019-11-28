@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -31,7 +32,7 @@ public class Message extends AbstractPersistable<Long> {
     private String text;
     private LocalDateTime sendTime;
     
-    @OneToMany
+    @ManyToMany
     private List<Account> likes;
     
     private HashMap<Account, String> comments;
