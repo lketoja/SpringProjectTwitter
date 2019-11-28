@@ -28,7 +28,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 public class Photo extends AbstractPersistable<Long> {
    
     @ManyToOne
-    private User user;
+    private Account user;
     
     @Lob
     private byte[] content;
@@ -37,14 +37,14 @@ public class Photo extends AbstractPersistable<Long> {
     private String mediaType;
     private Long photoSize;
     
-    private HashMap<User,String> comments;
+    private HashMap<Account,String> comments;
     
     @OneToMany
-    private List<User> likes;
+    private List<Account> likes;
     
     private boolean profilePhoto;
     
-    public Photo(User user, byte[] content, String description,
+    public Photo(Account user, byte[] content, String description,
             String mediaType, Long size){
         this.user = user;
         this.content = content;

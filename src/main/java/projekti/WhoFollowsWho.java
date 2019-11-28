@@ -24,10 +24,10 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 public class WhoFollowsWho extends AbstractPersistable<Long> {
     
     @ManyToOne
-    private User theOneFollowed;
+    private Account theOneFollowed;
     
     @ManyToOne
-    private User follower;
+    private Account follower;
     
     private LocalDateTime startTime;
     

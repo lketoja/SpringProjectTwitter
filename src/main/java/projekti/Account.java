@@ -24,7 +24,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends AbstractPersistable<Long> {
+public class Account extends AbstractPersistable<Long> {
     
     private String name;
     private String username;
@@ -39,7 +39,7 @@ public class User extends AbstractPersistable<Long> {
     @OneToMany
     private List<Message> messages;
     
-    public User(String name, String username, String password){
+    public Account(String name, String username, String password){
         this.name = name;
         this.username = username;
         this.password = password;

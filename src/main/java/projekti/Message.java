@@ -27,16 +27,16 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 public class Message extends AbstractPersistable<Long> {
     
     @ManyToOne
-    private User user; 
+    private Account user; 
     private String text;
     private LocalDateTime sendTime;
     
     @OneToMany
-    private List<User> likes;
+    private List<Account> likes;
     
-    private HashMap<User, String> comments;
+    private HashMap<Account, String> comments;
     
-    public Message(User user, String text, LocalDateTime sendTime){
+    public Message(Account user, String text, LocalDateTime sendTime){
         this.user=user;
         this.text=text;
         this.sendTime=sendTime;
