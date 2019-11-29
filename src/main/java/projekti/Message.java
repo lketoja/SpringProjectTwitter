@@ -35,7 +35,10 @@ public class Message extends AbstractPersistable<Long> {
     @ManyToMany
     private List<Account> likes;
     
-    private HashMap<Account, String> comments;
+    @OneToMany
+    private List<Comment> comments;
+    
+   
     
     public Message(Account user, String text, LocalDateTime sendTime){
         this.user=user;

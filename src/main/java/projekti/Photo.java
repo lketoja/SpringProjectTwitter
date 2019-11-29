@@ -38,7 +38,8 @@ public class Photo extends AbstractPersistable<Long> {
     private String mediaType;
     private Long photoSize;
     
-    private HashMap<Account,String> comments;
+    @OneToMany
+    private List<Comment> comments;
     
     @ManyToMany
     private List<Account> likes;
@@ -52,7 +53,7 @@ public class Photo extends AbstractPersistable<Long> {
         this.description = description;
         this.mediaType = mediaType;
         photoSize = size;
-        comments = new HashMap<>();
+        
         likes = new ArrayList<>();
         profilePhoto = false;
         

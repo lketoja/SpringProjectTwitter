@@ -30,28 +30,28 @@ public class Account extends AbstractPersistable<Long> {
     private String username;
     private String password;
     
-    @OneToMany
-    private List<WhoFollowsWho> whoFollowsWho;
+//    @OneToMany
+//    private List<WhoFollowsWho> whoFollowsWho;
     
   
     
-    @OneToMany
-    private List<Photo> photos;
+//    @OneToMany
+//    private List<Photo> photos;
+//    
+//    @OneToMany
+//    private List<Message> messages;
     
-    @OneToMany
-    private List<Message> messages;
-    
-    public Account(String name, String username, String password){
-        this.name = name;
-        this.username = username;
-        this.password = password;
-        whoFollowsWho = new ArrayList<>();
+//    public Account(String name, String username, String password){
+//        this.name = name;
+//        this.username = username;
+//        this.password = password;
+        //whoFollowsWho = new ArrayList<>();
      
-        photos = new ArrayList<>();
-        messages = new ArrayList<>();
-    }
-    
-    
-    
-    
+//        photos = new ArrayList<>();
+//        messages = new ArrayList<>();
+
+//    }
 }
+    
+    
+    

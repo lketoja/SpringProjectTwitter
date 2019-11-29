@@ -46,6 +46,9 @@ public class UserController {
     @Autowired
     private WhoFollowsWhoRepository whoFollowsWhoRepo;
     
+    @Autowired
+    private CommentRepository commentRepo;
+    
     @GetMapping("/")
     public String afterLogin(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -127,6 +130,19 @@ public class UserController {
         return "redirect:/" + user.getUsername();
     }
     
+    @PostMapping("/{username}/{messageId}/{loggedInUser}/comment-message")
+    public String commentMessage(@PathVariable Long messageId, @PathVariable String username, 
+            @PathVariable String loggedInUser, @RequestParam String text){
+        Comment comment = new Comment(userRepo.findByUsername(loggedInUser), text);
+        commentRepo.save(comment);
+        Message message = messageRepo.getOne(messageId);
+        message.getComments().add(comment);
+        messageRepo.save(message);
+        
+        return "redirect:/{username}";
+    }
+    
+    
     @PostMapping("/{userId}/{loggedInUser}/follow-me")
     public String followMe(@PathVariable Long userId, @PathVariable String loggedInUser){
         Account theOneFollowed = userRepo.getOne(userId);
@@ -135,6 +151,12 @@ public class UserController {
         whoFollowsWhoRepo.save(wfw);
         
         return "redirect:/" + theOneFollowed.getUsername();
+    }
+    
+    @PostMapping("/{username}/{whoFollowsWhoId}/remove-follower")
+    public String removeFollower(@PathVariable String username, @PathVariable Long whoFollowsWhoId){
+        whoFollowsWhoRepo.deleteById(whoFollowsWhoId);
+        return "redirect:/{username}";
     }
     
     
