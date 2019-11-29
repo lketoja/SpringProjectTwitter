@@ -5,6 +5,7 @@
  */
 package projekti;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -12,5 +13,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author Lotta
  */
 public interface WhoFollowsWhoRepository extends JpaRepository<WhoFollowsWho, Long>{
+    
+    
+    List<WhoFollowsWho> findByFollowerId(Long followerId);
+    List<WhoFollowsWho> findByTheOneFollowedId(Long theOneFollowedId);
     
 }

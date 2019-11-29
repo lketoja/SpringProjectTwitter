@@ -17,9 +17,16 @@
         
         <h2>The users you follow</h2>
         
-        
-        
+        <div th:each="whoFollowsWho : ${whoIFollow}">
+            <p th:text="${whoFollowsWho.theOneFollowed.username}">text</p>
+        </div>
 
+        <h2>The users who follow you!</h2>
+        
+        <div th:each="whoFollowsWho : ${whoFollowsMe}">
+            <p th:text="${whoFollowsWho.follower.username}">text</p>
+        </div>
+        
         <h2>Tweets</h2>
         
         <!--    Add new tweets    -->

@@ -43,6 +43,9 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     
+    @Autowired
+    private WhoFollowsWhoRepository whoFollowsWhoRepo;
+    
     @GetMapping("/")
     public String afterLogin(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -72,7 +75,8 @@ public class UserController {
         model.addAttribute("user", userRepo.getOne(user.getId()));
         model.addAttribute("messages", messageRepo.findByUserId(user.getId()));
         model.addAttribute("photos", photoRepo.findByUserId(user.getId()));
-        
+        model.addAttribute("whoIFollow", whoFollowsWhoRepo.findByFollowerId(user.getId()));
+        model.addAttribute("whoFollowsMe", whoFollowsWhoRepo.findByTheOneFollowedId(user.getId()));
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String loggedInUser = auth.getName();
         model.addAttribute("loggedInUser", loggedInUser);
@@ -94,8 +98,8 @@ public class UserController {
         Account user = userRepo.findByUsername(username);
         Message message = new Message(user, text, LocalDateTime.now());
         messageRepo.save(message);
-        user.getMessages().add(message);
-        userRepo.save(user);
+        //user.getMessages().add(message);
+        //userRepo.save(user);
         return "redirect:/{username}";
     }
     
@@ -106,8 +110,8 @@ public class UserController {
         Photo photo = new Photo(user, file.getBytes(), description,
             file.getContentType(), file.getSize());
         photoRepo.save(photo);
-        user.getPhotos().add(photo);
-        userRepo.save(user);    
+        //user.getPhotos().add(photo);
+        //userRepo.save(user);    
         return "redirect:/" + user.getUsername();
     }
     
@@ -125,10 +129,12 @@ public class UserController {
     
     @PostMapping("/{userId}/{loggedInUser}/follow-me")
     public String followMe(@PathVariable Long userId, @PathVariable String loggedInUser){
-        Account userToBeFollowed = userRepo.getOne(userId);
-        Account userWhoFollows = userRepo.findByUsername(loggedInUser);
+        Account theOneFollowed = userRepo.getOne(userId);
+        Account follower = userRepo.findByUsername(loggedInUser);
+        WhoFollowsWho wfw = new WhoFollowsWho(theOneFollowed, follower, LocalDateTime.now());
+        whoFollowsWhoRepo.save(wfw);
         
-        return "redirect:/" + userToBeFollowed.getUsername();
+        return "redirect:/" + theOneFollowed.getUsername();
     }
     
     

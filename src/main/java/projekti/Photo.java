@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -39,7 +40,7 @@ public class Photo extends AbstractPersistable<Long> {
     
     private HashMap<Account,String> comments;
     
-    @OneToMany
+    @ManyToMany
     private List<Account> likes;
     
     private boolean profilePhoto;
