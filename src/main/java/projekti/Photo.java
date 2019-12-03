@@ -10,7 +10,7 @@ package projekti;
  * @author Lotta
  */
 import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
@@ -19,11 +19,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Photo extends AbstractPersistable<Long> {
@@ -58,5 +58,23 @@ public class Photo extends AbstractPersistable<Long> {
         profilePhoto = false;
         
     }
+
+    public String getMediaType() {
+        return mediaType;
+    }
+
+    public long getPhotoSize() {
+        return photoSize;
+    }
+    
+    public byte[] getContent(){
+        return content;
+    }
+    
+    public String getDescription(){
+        return description;
+    }
+    
+    
     
 }

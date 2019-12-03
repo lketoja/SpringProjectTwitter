@@ -74,12 +74,17 @@ public class UserController {
     
     @GetMapping("/{username}")
     public String userHome(Model model, @PathVariable String username){
+        System.out.println(userRepo.findAll());
         Account user = userRepo.findByUsername(username);
-        model.addAttribute("user", userRepo.getOne(user.getId()));
+        if(user==null){
+            System.out.println("wtf");
+        }
+        model.addAttribute("user", user);
         model.addAttribute("messages", messageRepo.findByUserId(user.getId()));
         model.addAttribute("photos", photoRepo.findByUserId(user.getId()));
         model.addAttribute("whoIFollow", whoFollowsWhoRepo.findByFollowerId(user.getId()));
         model.addAttribute("whoFollowsMe", whoFollowsWhoRepo.findByTheOneFollowedId(user.getId()));
+       
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String loggedInUser = auth.getName();
         model.addAttribute("loggedInUser", loggedInUser);

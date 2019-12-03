@@ -6,12 +6,18 @@
 package projekti;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  *
  * @author Lotta
  */
 public interface AccountRepository extends JpaRepository<Account, Long>{
-    Account findByUsername(String username);
+    
+    public Account findByUsername(String username);
+    
+//    @Query("SELECT profile_photo_id FROM Account WHERE id = :id") 
+//    public Long findProfilePhotoById(@Param("id") Long id);
     
 }

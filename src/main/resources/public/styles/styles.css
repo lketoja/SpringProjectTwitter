@@ -1,0 +1,41 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 3.12.2019, 14:02:16
+    Author     : Lotta
+*/
+
+body{
+    
+    background-color: #eee;
+}
+
+.profile-photo{
+    border-radius: 50%;
+    width: 10rem; 
+    height: 10rem;
+    object-fit: cover;
+}
+
+.message-profile-photo{
+   border-radius: 50%;
+   width: 4rem; 
+   height: 4rem;
+   object-fit: cover;
+}
+
+.follow-profile-photo{
+   border-radius: 50%;
+   width: 2rem; 
+   height: 2rem;
+   object-fit: cover;
+}
+
+h1{
+    color: blue;
+}
+
+
