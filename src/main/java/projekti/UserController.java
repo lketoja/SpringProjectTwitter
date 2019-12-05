@@ -80,7 +80,7 @@ public class UserController {
             System.out.println("wtf");
         }
         model.addAttribute("user", user);
-        model.addAttribute("messages", messageRepo.findByUserId(user.getId()));
+        model.addAttribute("messages", messageRepo.findAll());
         model.addAttribute("photos", photoRepo.findByUserId(user.getId()));
         model.addAttribute("whoIFollow", whoFollowsWhoRepo.findByFollowerId(user.getId()));
         model.addAttribute("whoFollowsMe", whoFollowsWhoRepo.findByTheOneFollowedId(user.getId()));

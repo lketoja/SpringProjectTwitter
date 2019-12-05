@@ -7,52 +7,89 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" th:href="@{/styles/styles.css}"/>
     </head>
-    <body class="container-fluid p-5">
-        <h5 th:text="'Logged in as ' + ${loggedInUser}"></h5>
+    <body class="container-fluid px-5 py-0">
         
-        <h1 th:text="${user.username}">name</h1>
+        <div th:replace="fragments/layout :: navbar"></div>
         
-        <!--    Show profilePhoto    -->
-        <div th:switch="${user.profilePhoto}">
-            <img th:case="null" class="profile-photo" th:src="@{/img/defaultProfilePicture.png}"/>
-            <img th:case="*" class="profile-photo" th:src="@{/photos/{photoId} (photoId=${user.profilePhoto.id})}"/>
+        
+        <div class="header">
+            <div class="row align-items-center">
+<!--            <h5 th:text="'Logged in as ' + ${loggedInUser}"></h5>-->
+
+                <!--    Show profilePhoto    -->
+                <div class="col-3">
+                    <div th:switch="${user.profilePhoto}">
+                        <img th:case="null" th:src="@{/img/defaultProfilePicture.png}" class="profile-photo m-3"/>
+                        <img th:case="*" th:src="@{/photos/{photoId} (photoId=${user.profilePhoto.id})}" class="profile-photo m-3"/>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <h1 th:text="${user.username}">name</h1>
+                </div>
+
+                <!--    Follow me    -->
+                <div class="col-3">
+                    <div th:if="${user.username != loggedInUser}">    
+                        <form th:action="@{/{userId}/{loggedInUser}/follow-me (userId=${user.id}, loggedInUser=${loggedInUser})}" method="POST">
+                                <input type="submit" value="Follow Me!" class="btn btn-outline-dark">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!--     Search for users   -->
+            <div class="etsi p-3">
+                <div class="row">
+                    <div class="col-4">
+
+                    </div>
+                    <div class ="col-8">
+                        <form class="form-inline my-2 my-lg-0">
+                            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
         </div>
         
-        <!--    Follow me    -->
-        <div th:if="${user.username != loggedInUser}">    
-            <form th:action="@{/{userId}/{loggedInUser}/follow-me (userId=${user.id}, loggedInUser=${loggedInUser})}" method="POST">
-                    <input type="submit" value="Follow Me!" class="btn btn-primary">
-            </form>
-        </div>
+        
+        
         
         <section class="row pt-5">
             <section class="col-sm-4">
-                <h2>The users you follow</h2>
+                <div class="following p-3 mb-3">
+                    <h5 class="heading">Followers</h5>
 
-                <div th:each="whoFollowsWho : ${whoIFollow}">
-                    <p th:text="${whoFollowsWho.theOneFollowed.username}">text</p>
+                    <div th:each="whoFollowsWho : ${whoIFollow}">
+                        <p th:text="${whoFollowsWho.theOneFollowed.username}">text</p>
 
-                </div>
-
-                <h2>The users who follow you!</h2>
-
-                <div class="d-flex flex-row justify-content-between" th:each="whoFollowsWho : ${whoFollowsMe}">
-                    <div th:switch="${whoFollowsWho.follower.profilePhoto}">
-                        <img th:case="null" class="follow-profile-photo" th:src="@{/img/defaultProfilePicture.png}"/>
-                        <img th:case="*" class="follow-profile-photo" th:src="@{/photos/{photoId} (photoId=${whoFollowsWho.follower.profilePhoto.id})}"/>
                     </div>
-                    
-                    <p th:text="${whoFollowsWho.follower.username}">text</p>
-                    <form th:action="@{/{username}/{whoFollowsWhoId}/remove-follower (username=${user.username}, whoFollowsWhoId=${whoFollowsWho.id})}" method="POST">
-                        <input class="btn btn-primary btn-sm" type="submit" value="Remove">
-                    </form>
+                </div> 
+                
+                <div class="followers p-3 mb-3">
+                    <h5 class="heading">Following</h5>
+
+                    <div class="d-flex flex-row justify-content-between" th:each="whoFollowsWho : ${whoFollowsMe}">
+                        <div th:switch="${whoFollowsWho.follower.profilePhoto}">
+                            <img th:case="null" class="follow-profile-photo" th:src="@{/img/defaultProfilePicture.png}"/>
+                            <img th:case="*" class="follow-profile-photo" th:src="@{/photos/{photoId} (photoId=${whoFollowsWho.follower.profilePhoto.id})}"/>
+                        </div>
+
+                        <p th:text="${whoFollowsWho.follower.username}">text</p>
+                        <form th:action="@{/{username}/{whoFollowsWhoId}/remove-follower (username=${user.username}, whoFollowsWhoId=${whoFollowsWho.id})}" method="POST">
+                            <input class="btn btn-primary btn-sm" type="submit" value="Remove">
+                        </form>
+                    </div>
                 </div>
 
                 
             </section>
             
             <section class="col-sm-8">
-                <h2>Tweets</h2>
+                
                 <!--    Add new tweets    -->
                 <div th:if="${user.username == loggedInUser}" class="add-tweet">
 
@@ -66,7 +103,7 @@
 
                 <!--    Show tweets    -->
 
-                <div th:each="message : ${messages}" class="media m-2 p-3" style="background-color: #fff;">
+                <div th:each="message : ${messages}" class="media mb-2 p-3" style="background-color: #fff;">
                     <div th:switch="${message.user.profilePhoto}">
                         <img th:case="null" class="message-profile-photo mr-3" th:src="@{/img/defaultProfilePicture.png}"/>
                         <img th:case="*" class="message-profile-photo mr-3" th:src="@{/photos/{photoId} (photoId=${message.user.profilePhoto.id})}"/>
@@ -90,11 +127,9 @@
                             </div>
                         
                             <div class="media-body">
+                                <h5 th:text="${comment.user.username}"></h5>
                                 <p th:text="${comment.text}">comment text</p>
-                                <h5 th:text="${comment.user.username}">
-
-
-
+                  
                             </div>
                         </div>
 
