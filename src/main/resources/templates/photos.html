@@ -12,23 +12,23 @@
         <div th:replace="fragments/layout :: navbar"></div>
         
         
-        <div class="container-fluid header">
-            <div class="row">
+        <div class="header">
+            <div class="row align-items-center">
 <!--            <h5 th:text="'Logged in as ' + ${loggedInUser}"></h5>-->
 
                 <!--    Show profilePhoto    -->
-                <div class="col-sm-4">
+                <div class="col-3">
                     <div th:switch="${user.profilePhoto}">
                         <img th:case="null" th:src="@{/img/defaultProfilePicture.png}" class="profile-photo m-3"/>
                         <img th:case="*" th:src="@{/photos/{photoId} (photoId=${user.profilePhoto.id})}" class="profile-photo m-3"/>
                     </div>
                 </div>
 
-                <div class="col-sm-8">
-                    <h1 th:text="${user.username}" class="pt-5">name</h1>
+                <div class="col-9">
+                    <h1 th:text="${user.username}">name</h1>
                     <!--    Follow me    -->
                 
-                    <div th:if="${user.username != loggedInUser}">
+                    <div th:if="${user.username != loggedInUser.username}">
 <!--                        <div th:switch="">-->
                             <form th:action="@{/{userId}/{loggedInUser}/follow-me (userId=${user.id}, loggedInUser=${loggedInUser})}" method="POST">
                                     <input type="submit" value="Follow Me!" class="btn btn-outline-dark">
@@ -40,7 +40,6 @@
 
                 
             </div>
-        </div>
             
             <!--     Search for users   -->
             <div class="etsi p-3">
@@ -57,28 +56,13 @@
                     </div>
                 </div>
             </div>
-        
+        </div>
         
         
         
         
         <section class="row pt-5">
             <section class="col-sm-4">
-                
-                <!--    Show max 4 photos    -->
-                <div class="container-fluid">
-                    <a th:href="@{/{username}/photos (username=${user.username})}">
-                    <div class="mini-gallery pt-3 pl-3 mb-3">
-                        <h5 class="heading">Check out my gallery!</h5>
-                        <div class="row">
-                            <div th:each="photo : ${photos}" class="col-6 pr-3 pb-3 pl-0" >
-                                <img th:src="@{/photos/{photoId} (photoId=${photo.id})}" class="sidebar-photo"/>
-                            </div>
-                        </div>
-                    </div>
-                    </a>
-                </div>
-                
                 <div class="following p-3 mb-3">
                     <h5 class="heading">Following</h5>
 
@@ -108,64 +92,44 @@
             </section>
             
             <section class="col-sm-8">
+     
+                <!--    Show photos    -->
+                <div class="container-fluid">
+                <div class="card-columns">
+                    <div th:each="photo : ${photos}" class="card" style="width: 18rem;">
+                        <img th:src="@{/photos/{photoId} (photoId=${photo.id})}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <p class="card-text" th:text="${photo.description}">description</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                </div>
+                </div>
                 
-                <!--    Add new tweets    -->
-                <div th:if="${user.username == loggedInUser}" class="add-tweet">
-
-                    <h3>Add a new tweet!</h3>
-                    <form th:action="@{/{username}/add-message (username=${user.username})}" method="POST">
-                        <input type="textarea" name="text" />
-                        <input type="submit" value="Add"/>
+<!--                <div th:each="photo : ${photos}">
+                    <img width="30%" th:src="@{/photos/{photoId} (photoId=${photo.id})}"/>
+                    <p th:text="${photo.description}">description</p>
+                    <form th:if="${user.username == loggedInUser}" th:action="@{/{loggedInUser}/{photoId}/change-profile-photo (loggedInUser=${loggedInUser},photoId=${photo.id})}" method="POST">
+                        <input class="btn btn-primary btn-sm m-3" type="submit" value="to profile photo">
                     </form>
-                    <h3>Most recent tweets</h3>
+
+                </div>-->
+
+                <!--    Add new photos    -->
+                <div th:if="${user.username == loggedInUser.username}">
+                    <h3>Add a new photo!</h3>
+                    <form th:action="@{/{userId}/add-photo (userId=${user.id})}" method="POST" enctype="multipart/form-data">
+                        <input type="file" name="file" />
+                        <input type="text" name="description" placeholder="add description"/>
+                        <input type="submit" value="Add" />            
+                    </form>
+
                 </div>
-
-                <!--    Show tweets    -->
-
-                <div th:each="message : ${messages}" class="media mb-2 p-3" style="background-color: #fff;">
-                    <div th:switch="${message.user.profilePhoto}">
-                        <img th:case="null" class="message-profile-photo mr-3" th:src="@{/img/defaultProfilePicture.png}"/>
-                        <img th:case="*" class="message-profile-photo mr-3" th:src="@{/photos/{photoId} (photoId=${message.user.profilePhoto.id})}"/>
-                    </div>
-                    <div class="media-body">
-                        <p th:text="${message.text}">text</p>
-                        <div class="d-flex justify-content-end ">
-                        <p class="m-2">likes <span th:text="${#lists.size(message.likes)}">likes count</span></p>
-
-                        <!--    Like     -->
-                        <form th:action="@{/{userId}/{messageId}/like-message (userId=${user.id},messageId=${message.id})}" method="POST">
-                            <input class="btn btn-primary btn-sm m-3" type="submit" value="Like">
-                        </form>
-                        </div>
-
-                        <!--   Show Comments    -->
-                        <div th:each="comment : ${message.comments}" class="media mt-3">
-                            <div th:switch="${comment.user.profilePhoto}">
-                                <img th:case="null" class="message-profile-photo mr-3" th:src="@{/img/defaultProfilePicture.png}"/>
-                                <img th:case="*" class="message-profile-photo mr-3" th:src="@{/photos/{photoId} (photoId=${comment.user.profilePhoto.id})}"/>
-                            </div>
-                        
-                            <div class="media-body">
-                                <h5 th:text="${comment.user.username}"></h5>
-                                <p th:text="${comment.text}">comment text</p>
-                  
-                            </div>
-                        </div>
-
-
-
-                        <!--   Add Comment    -->
-                        <form th:action="@{/{username}/{messageId}/{loggedInUser}/comment-message (username=${user.username}, messageId=${message.Id}, loggedInUser=${loggedInUser})}" method="POST">
-                            <input type="text" name="text" placeholder="add a comment"/>
-                            <input type="submit" value="send" />
-                        </form>
-                        <br>
-                    </div>
-                </div>
+                
+                
             </section>
         
         </section>
-        
         
         
         

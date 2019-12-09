@@ -10,9 +10,14 @@ package projekti;
  * @author Lotta
  */
 
+import java.awt.print.Pageable;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -81,9 +86,20 @@ public class UserController {
         }
         model.addAttribute("user", user);
         model.addAttribute("messages", messageRepo.findAll());
+       
         model.addAttribute("photos", photoRepo.findByUserId(user.getId()));
-        model.addAttribute("whoIFollow", whoFollowsWhoRepo.findByFollowerId(user.getId()));
-        model.addAttribute("whoFollowsMe", whoFollowsWhoRepo.findByTheOneFollowedId(user.getId()));
+//        System.out.println("tässä whoIFollow");
+//        System.out.println(whoFollowsWhoRepo.findFollowingUsernamesByAccountId(user.getId()));
+//        
+//        List<Object> objektit = whoFollowsWhoRepo.findFollowingByAccountId(user.getId());
+//        List<Account> following = new ArrayList<>();
+//        for(Object o : objektit){
+//            Account a = (Account) o;
+//            following.add(a);
+        System.out.println(whoFollowsWhoRepo.findFollowingUsernamesByAccountId(user.getId()));
+        model.addAttribute("whoIFollow", whoFollowsWhoRepo.findFollowingUsernamesByAccountId(user.getId()));
+//        model.addAttribute("whoFollowsMe", whoFollowsWhoRepo.findByTheOneFollowedId(user.getId()));
+//        model.addAttribute("whoIFollow", whoFollowsWhoRepo.findByFollowerId(user.getId()));
        
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String loggedInUser = auth.getName();

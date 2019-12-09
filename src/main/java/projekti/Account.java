@@ -14,6 +14,8 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
@@ -21,6 +23,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
+//@NamedEntityGraph(name = "Account.profilePhotoAlso",
+//        attributeNodes = {@NamedAttributeNode("profilePhoto")})
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,7 +34,12 @@ public class Account extends AbstractPersistable<Long> {
     private String username;
     private String password;
     @OneToOne
-    private Photo profilePhoto; 
+    private Photo profilePhoto;
+    
+//    @OneToMany
+//    private List<Photo> photos = new ArrayList<>();
+    
+    
         
     public Account(String name, String username, String password){
         this.name = name;
@@ -38,6 +47,7 @@ public class Account extends AbstractPersistable<Long> {
         this.password = password;
         
     }
+    
     
     public void setProfilePhoto(Photo photo){
         profilePhoto = photo;

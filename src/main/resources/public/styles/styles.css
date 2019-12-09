@@ -31,13 +31,14 @@ body{
 }
 
 .profile-photo{
-    position: relative;
-    z-index: 1;
+/*    position: relative;
+    z-index: 1;*/
     border-radius: 50%;
     width: 10rem; 
     height: 10rem;
     object-fit: cover;
-    border: 4px solid white;
+    border: 5px solid white;
+    margin: auto;
  
 }
 
@@ -53,6 +54,19 @@ body{
    width: 2rem; 
    height: 2rem;
    object-fit: cover;
+}
+
+.mini-gallery{
+    background-color: #fff;
+}
+
+.sidebar-photo{
+    object-fit: cover;
+    width: 100%; 
+    height: 100%;
+    
+    
+   
 }
 
 .following{

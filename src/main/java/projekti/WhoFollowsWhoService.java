@@ -5,18 +5,19 @@
  */
 package projekti;
 
-import java.awt.print.Pageable;
-import java.util.List;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Lotta
  */
-public interface PhotoRepository extends JpaRepository<Photo, Long>{
+@Service
+public class WhoFollowsWhoService {
+    
+    @Autowired 
+    private WhoFollowsWhoRepository followRepo;
     
     
-    
-    public List<Photo> findByUserId(Long userId);
     
 }
