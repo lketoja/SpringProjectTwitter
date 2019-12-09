@@ -75,6 +75,10 @@ public class Photo extends AbstractPersistable<Long> {
         return description;
     }
     
+    public List<Comment> getComments(){
+        return comments;
+    }
+    
     
     
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 /**
@@ -32,6 +33,9 @@ public class PhotoController {
     @Autowired
     private WhoFollowsWhoRepository whoFollowsWhoRepo;
     
+    @Autowired
+    private CommentRepository commentRepo;
+    
     
     @GetMapping("/{username}/photos")
     public String viewGallery(Model model, @PathVariable String username){
@@ -46,8 +50,6 @@ public class PhotoController {
         return "photos";
     }
 
-
-    
     @PostMapping("/{loggedInUser}/{photoId}/change-profile-photo")
     public String changeProfilePhoto(@PathVariable String loggedInUser, 
             @PathVariable Long photoId){
@@ -57,7 +59,17 @@ public class PhotoController {
         userRepo.save(user);
         
         return "redirect:/{loggedInUser}";
+    }
     
+    @PostMapping("/{username}/{photoId}/{loggedInUser}/comment-photo")
+    public String commentPhoto(@PathVariable Long photoId,
+            @PathVariable String loggedInUser, @RequestParam String text){
+        Comment comment = new Comment(userRepo.findByUsername(loggedInUser), text);
+        commentRepo.save(comment);
+        Photo photo = photoRepo.getOne(photoId);
+        photo.getComments().add(comment);
+        photoRepo.save(photo);
+        return "redirect:/{username}/photos";
     }
     
 }

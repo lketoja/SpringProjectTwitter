@@ -28,9 +28,9 @@
                     <h1 th:text="${user.username}" class="pt-5">name</h1>
                     <!--    Follow me    -->
                 
-                    <div th:if="${user.username != loggedInUser}">
+                    <div th:if="${user.username != loggedInUser.username}">
 <!--                        <div th:switch="">-->
-                            <form th:action="@{/{userId}/{loggedInUser}/follow-me (userId=${user.id}, loggedInUser=${loggedInUser})}" method="POST">
+                            <form th:action="@{/{userId}/{loggedInUser}/follow-me (userId=${user.id}, loggedInUser=${loggedInUser.username})}" method="POST">
                                     <input type="submit" value="Follow Me!" class="btn btn-outline-dark">
                             </form>
 <!--                        </div>-->
@@ -66,12 +66,12 @@
             <section class="col-sm-4">
                 
                 <!--    Show max 4 photos    -->
-                <div class="container-fluid">
+                <div class="container-fluid white-area p-3 mb-3">
                     <a th:href="@{/{username}/photos (username=${user.username})}">
-                    <div class="mini-gallery pt-3 pl-3 mb-3">
+                    <div class="">
                         <h5 class="heading">Check out my gallery!</h5>
                         <div class="row">
-                            <div th:each="photo : ${photos}" class="col-6 pr-3 pb-3 pl-0" >
+                            <div th:each="photo : ${photos}" class="col-6" >
                                 <img th:src="@{/photos/{photoId} (photoId=${photo.id})}" class="sidebar-photo"/>
                             </div>
                         </div>
@@ -110,7 +110,7 @@
             <section class="col-sm-8">
                 
                 <!--    Add new tweets    -->
-                <div th:if="${user.username == loggedInUser}" class="add-tweet">
+                <div th:if="${user.username == loggedInUser.username}" class="add-tweet">
 
                     <h3>Add a new tweet!</h3>
                     <form th:action="@{/{username}/add-message (username=${user.username})}" method="POST">
@@ -143,21 +143,17 @@
                             <div th:switch="${comment.user.profilePhoto}">
                                 <img th:case="null" class="message-profile-photo mr-3" th:src="@{/img/defaultProfilePicture.png}"/>
                                 <img th:case="*" class="message-profile-photo mr-3" th:src="@{/photos/{photoId} (photoId=${comment.user.profilePhoto.id})}"/>
-                            </div>
-                        
+                            </div>                        
                             <div class="media-body">
                                 <h5 th:text="${comment.user.username}"></h5>
                                 <p th:text="${comment.text}">comment text</p>
-                  
                             </div>
                         </div>
 
-
-
                         <!--   Add Comment    -->
-                        <form th:action="@{/{username}/{messageId}/{loggedInUser}/comment-message (username=${user.username}, messageId=${message.Id}, loggedInUser=${loggedInUser})}" method="POST">
-                            <input type="text" name="text" placeholder="add a comment"/>
-                            <input type="submit" value="send" />
+                        <form th:action="@{/{username}/{messageId}/{loggedInUser}/comment-message (username=${user.username}, messageId=${message.Id}, loggedInUser=${loggedInUser.username})}" method="POST">
+                            <input type="text" class="form-control" name="text" placeholder="add a comment"/>
+                            <input class="btn btn-primary mt-2" type="submit" value="send" />
                         </form>
                         <br>
                     </div>

@@ -9,8 +9,8 @@
     </head>
     <body class="container-fluid px-5 py-0">
         
-        <div th:replace="fragments/layout :: navbar"></div>
-        
+<!--        <div th:replace="fragments/layout :: navbar(loggedInUser='${loggedInUser}')"></div>-->
+        <div th:replace="fragments/layout :: navbar(loggedInUser='${loggedInUser}')"></div>
         
         <div class="header">
             <div class="row align-items-center">
@@ -61,7 +61,7 @@
         
         
         
-        <section class="row pt-5">
+        <section class="row py-4">
             <section class="col-sm-4">
                 <div class="following p-3 mb-3">
                     <h5 class="heading">Following</h5>
@@ -94,16 +94,35 @@
             <section class="col-sm-8">
      
                 <!--    Show photos    -->
-                <div class="container-fluid">
-                <div class="card-columns">
-                    <div th:each="photo : ${photos}" class="card" style="width: 18rem;">
-                        <img th:src="@{/photos/{photoId} (photoId=${photo.id})}" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <p class="card-text" th:text="${photo.description}">description</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                <div th:each="photo : ${photos}">
+                    <div class="container-fluid white-area p-3 mb-3">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <img th:src="@{/photos/{photoId} (photoId=${photo.id})}" class="gallery-photo">
+                                <p class="lead" th:text="${photo.description}">description</p>
+                            </div>
+                            
+                            <div class="col-sm-8">
+                                
+                                
+                                <div th:each="comment : ${photo.comments}" class="media mt-3">
+                                    <div th:switch="${comment.user.profilePhoto}">
+                                        <img th:case="null" class="message-profile-photo mr-3" th:src="@{/img/defaultProfilePicture.png}"/>
+                                        <img th:case="*" class="message-profile-photo mr-3" th:src="@{/photos/{photoId} (photoId=${comment.user.profilePhoto.id})}"/>
+                                    </div>
+                                    <div class="media-body">
+                                        <h5 th:text="${comment.user.username}"></h5>
+                                        <p th:text="${comment.text}">comment text</p>
+                                    </div>
+                                </div>
+                              
+                                <form th:action="@{/{username}/{photoId}/{loggedInUser}/comment-photo (username=${user.username}, photoId=${photo.Id}, loggedInUser=${loggedInUser.username})}" method="POST">
+                                    <input type="text" class="form-control" name="text" placeholder="add a comment"/>
+                                    <input class="btn btn-primary mt-2" type="submit" value="send" />
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
                 </div>
                 
 <!--                <div th:each="photo : ${photos}">

@@ -37,7 +37,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
     
     @Autowired
-    private AccountRepository userRepo; 
+    private AccountRepository userRepo;
+    
+    @Autowired
+    private AccountService accountServ;
     
     @Autowired
     private MessageRepository messageRepo;
@@ -56,9 +59,8 @@ public class UserController {
     
     @GetMapping("/")
     public String afterLogin(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String loggedInUser = auth.getName();
-        return "redirect:/" + loggedInUser;
+        Account loggedInUser = accountServ.getLoggedInUser();
+        return "redirect:/" + loggedInUser.getUsername();
     }
     
     @GetMapping("/create-account")
@@ -100,10 +102,8 @@ public class UserController {
         model.addAttribute("whoIFollow", whoFollowsWhoRepo.findFollowingUsernamesByAccountId(user.getId()));
 //        model.addAttribute("whoFollowsMe", whoFollowsWhoRepo.findByTheOneFollowedId(user.getId()));
 //        model.addAttribute("whoIFollow", whoFollowsWhoRepo.findByFollowerId(user.getId()));
-       
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String loggedInUser = auth.getName();
-        model.addAttribute("loggedInUser", loggedInUser);
+     
+        model.addAttribute("loggedInUser", accountServ.getLoggedInUser());
         
         return "user-home";
     }
