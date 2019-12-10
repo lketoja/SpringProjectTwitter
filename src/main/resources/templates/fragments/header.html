@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Hello world</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" th:href="@{/styles/styles.css}"/>
+        <script src="https://kit.fontawesome.com/9c3156e679.js" crossorigin="anonymous"></script>
+    </head>
+    <body class="container-fluid px-5 py-0">
+        
+       
+        
+        <div th:fragment="header (user, loggedInUser)">    
+            <div class="container-fluid header">
+                <div class="row">
+    <!--            <h5 th:text="'Logged in as ' + ${loggedInUser}"></h5>-->
+
+                    <!--    Show profilePhoto    -->
+                    <div class="col-md-4">
+                        <div class="d-flex justify-content-center my-4" th:switch="${user.profilePhoto}">
+                            <img th:case="null" th:src="@{/img/defaultProfilePicture.png}" class="profile-photo"/>
+                            <img th:case="*" th:src="@{/photos/{photoId} (photoId=${user.profilePhoto.id})}" class="profile-photo"/>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8 d-flex flex-column justify-content-center">
+                        <h1 th:text="${user.username}">name</h1>
+                        <!--    Follow me    -->
+
+                        <div th:if="${user.username != loggedInUser.username}">
+    <!--                        <div th:switch="">-->
+                                <form th:action="@{/{userId}/{loggedInUser}/follow-me (userId=${user.id}, loggedInUser=${loggedInUser.username})}" method="POST">
+                                        <input type="submit" value="Follow Me!" class="btn btn-dark mt-2 mb-3">
+                                </form>
+    <!--                        </div>-->
+                        </div>                
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!--     Search for users   -->
+            <div class="container-fluid white-area p-3">
+<!--                <div class="etsi p-3">-->
+                    <div class="row">
+                        <div class="col-md-3">
+
+                        </div>
+                        <div class ="col-md-9">
+                            <form class="form-inline my-2 my-lg-0">
+                                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                            </form>
+
+                        </div>
+                    </div>
+<!--                </div>-->
+            </div>
+        </div>
+  
+
+    </body>
+</html>

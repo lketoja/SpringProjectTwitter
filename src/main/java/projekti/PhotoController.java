@@ -72,4 +72,14 @@ public class PhotoController {
         return "redirect:/{username}/photos";
     }
     
+    @PostMapping("/{username}/{photoId}/{loggedInUser}/like-photo")
+    public String likePhoto(@PathVariable String username,
+            @PathVariable Long photoId){
+        Photo photo = photoRepo.getOne(photoId);
+        Account loggedInUser = userServ.getLoggedInUser();
+        photo.getLikes().add(loggedInUser);
+        photoRepo.save(photo);
+        return "redirect:/{username}/photos";
+    }
+    
 }

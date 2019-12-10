@@ -42,7 +42,7 @@ public class Photo extends AbstractPersistable<Long> {
     private List<Comment> comments;
     
     @ManyToMany
-    private List<Account> likes;
+    public List<Account> likes;
     
     private boolean profilePhoto;
     
@@ -77,6 +77,10 @@ public class Photo extends AbstractPersistable<Long> {
     
     public List<Comment> getComments(){
         return comments;
+    }
+    
+    public List<Account> getLikes(){
+        return likes;
     }
     
     

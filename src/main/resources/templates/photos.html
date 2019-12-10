@@ -9,61 +9,17 @@
     </head>
     <body class="container-fluid px-5 py-0">
         
-<!--        <div th:replace="fragments/layout :: navbar(loggedInUser='${loggedInUser}')"></div>-->
-        <div th:replace="fragments/layout :: navbar(loggedInUser='${loggedInUser}')"></div>
+
+        <div th:replace="fragments/navbar :: navbar (loggedInUser=${loggedInUser})"></div>
         
-        <div class="header">
-            <div class="row align-items-center">
-<!--            <h5 th:text="'Logged in as ' + ${loggedInUser}"></h5>-->
-
-                <!--    Show profilePhoto    -->
-                <div class="col-3">
-                    <div th:switch="${user.profilePhoto}">
-                        <img th:case="null" th:src="@{/img/defaultProfilePicture.png}" class="profile-photo m-3"/>
-                        <img th:case="*" th:src="@{/photos/{photoId} (photoId=${user.profilePhoto.id})}" class="profile-photo m-3"/>
-                    </div>
-                </div>
-
-                <div class="col-9">
-                    <h1 th:text="${user.username}">name</h1>
-                    <!--    Follow me    -->
-                
-                    <div th:if="${user.username != loggedInUser.username}">
-<!--                        <div th:switch="">-->
-                            <form th:action="@{/{userId}/{loggedInUser}/follow-me (userId=${user.id}, loggedInUser=${loggedInUser})}" method="POST">
-                                    <input type="submit" value="Follow Me!" class="btn btn-outline-dark">
-                            </form>
-<!--                        </div>-->
-                    </div>
-                
-                </div>
-
-                
-            </div>
-            
-            <!--     Search for users   -->
-            <div class="etsi p-3">
-                <div class="row">
-                    <div class="col-4">
-
-                    </div>
-                    <div class ="col-8">
-                        <form class="form-inline my-2 my-lg-0">
-                            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                        </form>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        
+        <div th:replace="fragments/header :: header(${user}, ${loggedInUser})"></div>    
+           
         
         
         
         <section class="row py-4">
-            <section class="col-sm-4">
-                <div class="following p-3 mb-3">
+            <section class="col-md-4">
+                <div class="white-area p-3 mb-3">
                     <h5 class="heading">Following</h5>
 
                     <div th:each="username : ${whoIFollow}">
@@ -72,7 +28,7 @@
                     </div>
                 </div> 
                 
-                <div class="followers p-3 mb-3">
+                <div class="white-area p-3 mb-3">
                     <h5 class="heading">Followers</h5>
 
 <!--                    <div class="d-flex flex-row justify-content-between" th:each="whoFollowsWho : ${whoFollowsMe}">
@@ -91,7 +47,7 @@
                 
             </section>
             
-            <section class="col-sm-8">
+            <section class="col-md-8">
      
                 <!--    Show photos    -->
                 <div th:each="photo : ${photos}">
@@ -100,6 +56,14 @@
                             <div class="col-sm-4">
                                 <img th:src="@{/photos/{photoId} (photoId=${photo.id})}" class="gallery-photo">
                                 <p class="lead" th:text="${photo.description}">description</p>
+                                <div class="d-flex justify-content-end ">
+                                    <p class="m-2">likes <span th:text="${#lists.size(photo.likes)}">likes count</span></p>
+
+                                    <!--    Like     -->
+                                    <form th:action="@{/{username}/{photoId}/{loggedInUser}/like-photo (username=${user.username},photoId=${photo.id}, loggedInUser=${loggedInUser.username})}" method="POST">
+                                        <button type="submit" class="btn btn-primary btn-sm m-3"><i class="fa fa-pencil mr-2"></i>Like</button>  
+                                    </form>
+                                </div>
                             </div>
                             
                             <div class="col-sm-8">
