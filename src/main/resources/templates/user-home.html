@@ -19,44 +19,55 @@
         <section class="row py-4">
             <section class="col-md-4">
                 
-                <!--    Show max 4 photos    -->
+                <!--    Show "link-to-gallery-photos"    -->
                 <div class="container-fluid white-area p-3 mb-3">
-                    <a th:href="@{/{username}/photos (username=${user.username})}">
-                    <div class="">
+                    <a th:href="@{/{username}/photos (username=${user.username})}">                 
                         <h5 class="link-text mb-3">Check out my gallery!</h5>
                         <div class="row">
                             <div th:each="photo : ${photos}" class="col-6" >
                                 <img th:src="@{/photos/{photoId} (photoId=${photo.id})}" class="sidebar-photo"/>
                             </div>
-                        </div>
-                    </div>
+                        </div>                   
                     </a>
                 </div>
                 
                 <div class="white-area p-3 mb-3">
                     <h5 class="heading mb-3">Following</h5>
+                    
+                    <div th:each="followedUser : ${whoIFollow}">
+                        <div th:switch="${followedUser.profilePhoto}">
+                            <img th:case="null" class="follow-profile-photo" th:src="@{/img/defaultProfilePicture.png}"/>
+                            <img th:case="*" class="follow-profile-photo" th:src="@{/photos/{photoId} (photoId=${followedUser.profilePhoto.id})}"/>
+                        </div>
+                        <a class="follow-text" th:href="@{/{username} (username=${followedUser.username})}">
+                            <p th:text="${followedUser.username}">username</p>
+                        </a>
+                        
+                    </div>
 
-                    <div th:each="username : ${whoIFollow}">
+<!--                    <div th:each="username : ${whoIFollow}">
                         <a class="follow-text" th:href="@{/{username} (username=${user.username})}">
                             <p th:text="${username}">text</p>
                         </a>
-                    </div>
+                    </div>-->
                 </div> 
                 
                 <div class="white-area p-3 mb-3">
                     <h5 class="heading mb-3">Followers</h5>
 
-<!--                    <div class="d-flex flex-row justify-content-between" th:each="whoFollowsWho : ${whoFollowsMe}">
-                        <div th:switch="${whoFollowsWho.follower.profilePhoto}">
+                    <div class="d-flex flex-row justify-content-between" th:each="follower : ${whoFollowsMe}">
+                        
+                        <div th:switch="${follower.profilePhoto}">
                             <img th:case="null" class="follow-profile-photo" th:src="@{/img/defaultProfilePicture.png}"/>
-                            <img th:case="*" class="follow-profile-photo" th:src="@{/photos/{photoId} (photoId=${whoFollowsWho.follower.profilePhoto.id})}"/>
+                            <img th:case="*" class="follow-profile-photo" th:src="@{/photos/{photoId} (photoId=${follower.profilePhoto.id})}"/>
                         </div>
+                        <p th:text="${follower.username}">text</p>
 
-                        <p th:text="${whoFollowsWho.follower.username}">text</p>
-                        <form th:action="@{/{username}/{whoFollowsWhoId}/remove-follower (username=${user.username}, whoFollowsWhoId=${whoFollowsWho.id})}" method="POST">
-                            <input class="btn btn-primary btn-sm" type="submit" value="Remove">
-                        </form>
-                    </div>-->
+                        
+<!--                        <form th:action="@{/{username}/{whoFollowsWhoId}/remove-follower (username=${user.username}, whoFollowsWhoId=${whoFollowsWho.id})}" method="POST">
+                            <input class="btn btn-primary btn-sm" type="submit" value="Block">
+                        </form>-->
+                    </div>
                 </div>
 
                 
@@ -65,7 +76,7 @@
             <section class="col-md-8">
                 
                 <!--    Add new message    -->
-                <div th:if="${user.username == loggedInUser.username}" class="white-area p-3 mb-3">                
+                <div th:if="${user == loggedInUser}" class="white-area p-3 mb-3">                
                     <h5 class="heading mb-3">Add a new message!</h5>
                     <form th:action="@{/{username}/add-message (username=${user.username})}" method="POST">
                         <input class="form-control" type="textarea" name="text" placeholder="What's on your mind?"/>
@@ -85,10 +96,15 @@
                         <!--    Like     -->
                         <div class="d-flex justify-content-end align-items-center">
                             <p class="m-2">likes <span th:text="${#lists.size(message.likes)}">likes count</span></p>
-                            <p th:if="${#lists.contains(message.likes,  + loggedInUser.id)}">olet jo tykännyt!</p>
-                            <form th:action="@{/{userId}/{messageId}/like-message (userId=${user.id},messageId=${message.id})}" method="POST">
-                                <button type="submit" class="btn btn-primary btn-sm mx-2"><i class="fa fa-thumbs-up mr-2"></i>Like</button>  
-                            </form>
+                            <div th:switch="${#lists.contains(message.likes, loggedInUser)}">
+                            
+                                <form th:case="false" th:action="@{/{username}/{messageId}/{loggedInUser}/like-message (username=${user.username},messageId=${message.id}, loggedInUser=${loggedInUser.username})}" method="POST">
+                                    <button type="submit" class="btn btn-primary btn-sm mx-2"><i class="fa fa-thumbs-up mr-2"></i>Like</button>  
+                                </form>
+                                <form th:case="true" th:action="@{/{username}/{messageId}/{loggedInUser}/dont-like-message (username=${user.username},messageId=${message.id}, loggedInUser=${loggedInUser.username})}" method="POST">
+                                    <button type="submit" class="btn btn-primary btn-sm mx-2"></i>Don't Like</button>  
+                                </form>
+                            </div>
                         </div>
 
                         <!--   Show Comments    -->

@@ -40,7 +40,7 @@ public class UserController {
     private AccountRepository userRepo;
     
     @Autowired
-    private AccountService accountServ;
+    private AccountService userServ;
     
     @Autowired
     private MessageRepository messageRepo;
@@ -59,7 +59,7 @@ public class UserController {
     
     @GetMapping("/")
     public String afterLogin(){
-        Account loggedInUser = accountServ.getLoggedInUser();
+        Account loggedInUser = userServ.getLoggedInUser();
         return "redirect:/" + loggedInUser.getUsername();
     }
     
@@ -87,6 +87,9 @@ public class UserController {
             System.out.println("wtf");
         }
         model.addAttribute("user", user);
+        model.addAttribute("allUsers", userServ.getAllOtherUsers(user));
+        
+//        Pageable pageable = (Pageable) PageRequest.of(0,10);
         model.addAttribute("messages", messageRepo.findAll());
        
         model.addAttribute("photos", photoRepo.findByUserId(user.getId()));
@@ -98,12 +101,13 @@ public class UserController {
 //        for(Object o : objektit){
 //            Account a = (Account) o;
 //            following.add(a);
-        System.out.println(whoFollowsWhoRepo.findFollowingUsernamesByAccountId(user.getId()));
-        model.addAttribute("whoIFollow", whoFollowsWhoRepo.findFollowingUsernamesByAccountId(user.getId()));
+//        System.out.println(whoFollowsWhoRepo.findFollowingUsernamesByAccountId(user.getId()));
+//        model.addAttribute("whoIFollow", whoFollowsWhoRepo.findFollowingUsernamesByAccountId(user.getId()));
 //        model.addAttribute("whoFollowsMe", whoFollowsWhoRepo.findByTheOneFollowedId(user.getId()));
-//        model.addAttribute("whoIFollow", whoFollowsWhoRepo.findByFollowerId(user.getId()));
+        model.addAttribute("whoIFollow", userServ.getFollowingAsUserObjects(user));
+        model.addAttribute("whoFollowsMe", userServ.getFollowersAsUserObjects(user));
      
-        model.addAttribute("loggedInUser", accountServ.getLoggedInUser());
+        model.addAttribute("loggedInUser", userServ.getLoggedInUser());
         
         return "user-home";
     }
@@ -139,16 +143,26 @@ public class UserController {
         return "redirect:/" + user.getUsername();
     }
     
-    @PostMapping("/{userId}/{messageId}/like-message")
-    public String likeMessage(@PathVariable Long userId, @PathVariable Long messageId){
-        Account user = userRepo.getOne(userId);
+    @PostMapping("/{username}/{messageId}/{loggedInUser}/like-message")
+    public String likeMessage(@PathVariable Long messageId, @PathVariable String username, 
+            @PathVariable String loggedInUser){
         Message message = messageRepo.getOne(messageId);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Account loggedInUser = userRepo.findByUsername(auth.getName());
-        message.getLikes().add(loggedInUser);
+        Account currentUser = userRepo.findByUsername(loggedInUser);
+        message.getLikes().add(currentUser);
         messageRepo.save(message);
         
-        return "redirect:/" + user.getUsername();
+        return "redirect:/{username}";
+    }
+    
+    @PostMapping("/{username}/{messageId}/{loggedInUser}/dont-like-message")
+    public String dontLikeMessage(@PathVariable Long messageId, @PathVariable String username, 
+            @PathVariable String loggedInUser){
+        Message message = messageRepo.getOne(messageId);
+        Account currentUser = userRepo.findByUsername(loggedInUser);
+        message.getLikes().remove(currentUser);
+        messageRepo.save(message);
+        
+        return "redirect:/{username}";
     }
     
     @PostMapping("/{username}/{messageId}/{loggedInUser}/comment-message")
