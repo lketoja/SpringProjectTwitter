@@ -5,7 +5,12 @@
  */
 package projekti;
 
+import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,10 +25,21 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comment extends AbstractPersistable<Long> {
+public class Comment implements Serializable {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", updatable = false, nullable = false)
+    private Long id;
     
     @ManyToOne
     private Account user;
     private String text;
+
+    public Comment(Account user, String text) {
+        this.user=user;
+        this.text=text;
+        
+    }
 
 }

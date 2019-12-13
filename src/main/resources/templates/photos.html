@@ -9,96 +9,56 @@
     </head>
     <body class="container-fluid px-5 py-0">
         
-
+        <!---------    Navbar    ---------->
         <div th:replace="fragments/navbar :: navbar (loggedInUser=${loggedInUser})"></div>
         
-        <div th:replace="fragments/header :: header(${user}, ${loggedInUser})"></div>    
-           
-        
-        
-        
+        <!---------    Header    ---------->
+        <div th:replace="fragments/header :: header(${user}, ${loggedInUser})"></div>  
+ 
         <section class="row py-4">
             <section class="col-md-4">
-                <div class="white-area p-3 mb-3">
-                    <h5 class="heading">Following</h5>
-
-                    <div th:each="username : ${whoIFollow}">
-                        <p th:text="${username}">text</p>
-
-                    </div>
-                </div> 
                 
-                <div class="white-area p-3 mb-3">
-                    <h5 class="heading">Followers</h5>
-
-<!--                    <div class="d-flex flex-row justify-content-between" th:each="whoFollowsWho : ${whoFollowsMe}">
-                        <div th:switch="${whoFollowsWho.follower.profilePhoto}">
-                            <img th:case="null" class="follow-profile-photo" th:src="@{/img/defaultProfilePicture.png}"/>
-                            <img th:case="*" class="follow-profile-photo" th:src="@{/photos/{photoId} (photoId=${whoFollowsWho.follower.profilePhoto.id})}"/>
-                        </div>
-
-                        <p th:text="${whoFollowsWho.follower.username}">text</p>
-                        <form th:action="@{/{username}/{whoFollowsWhoId}/remove-follower (username=${user.username}, whoFollowsWhoId=${whoFollowsWho.id})}" method="POST">
-                            <input class="btn btn-primary btn-sm" type="submit" value="Remove">
-                        </form>
-                    </div>-->
-                </div>
-
+                <!---------    Following    ---------->
+                <div th:replace="fragments/follow:: following(${whoIFollow})"></div>
+                
+                <!---------    Followers    ---------->
+                <div th:replace="fragments/follow:: followers(${whoFollowsMe})"></div>
                 
             </section>
             
             <section class="col-md-8">
      
-                <!--    Show photos    -->
-                <div th:each="photo : ${photos}">
+                <!-----------   Show photos  ------------>
+                <div th:each="interactable : ${photos}">
                     <div class="container-fluid white-area p-3 mb-3">
                         <div class="row">
                             <div class="col-sm-4">
-                                <img th:src="@{/photos/{photoId} (photoId=${photo.id})}" class="gallery-photo">
-                                <p class="lead" th:text="${photo.description}">description</p>
-                                <div class="d-flex justify-content-end ">
-                                    <p class="m-2">likes <span th:text="${#lists.size(photo.likes)}">likes count</span></p>
-
-                                    <!--    Like     -->
-                                    <form th:action="@{/{username}/{photoId}/{loggedInUser}/like-photo (username=${user.username},photoId=${photo.id}, loggedInUser=${loggedInUser.username})}" method="POST">
-                                        <button type="submit" class="btn btn-primary btn-sm m-3"><i class="fa fa-pencil mr-2"></i>Like</button>  
-                                    </form>
-                                </div>
+                                <img th:src="@{/photos/{photoId} (photoId=${interactable.id})}" class="gallery-photo">
+                                    
+                                <!-----------   Change profilephoto  ------------>
+                                <form th:if="${user == loggedInUser}" th:action="@{/{loggedInUser}/{photoId}/change-profile-photo (loggedInUser=${loggedInUser},photoId=${interactable.id})}" method="POST">
+                                    <input class="btn btn-primary btn-sm m-3" type="submit" value=" Add to profile photo">
+                                </form>
+                                
+                                <p class="lead" th:text="${interactable.description}">description</p>
+                                
+                                <!-----------   Like / Don't like  ------------>
+                                <div th:replace="fragments/interactable :: like(${interactable.likes})"></div>
                             </div>
                             
                             <div class="col-sm-8">
                                 
-                                
-                                <div th:each="comment : ${photo.comments}" class="media mt-3">
-                                    <div th:switch="${comment.user.profilePhoto}">
-                                        <img th:case="null" class="message-profile-photo mr-3" th:src="@{/img/defaultProfilePicture.png}"/>
-                                        <img th:case="*" class="message-profile-photo mr-3" th:src="@{/photos/{photoId} (photoId=${comment.user.profilePhoto.id})}"/>
-                                    </div>
-                                    <div class="media-body">
-                                        <h5 th:text="${comment.user.username}"></h5>
-                                        <p th:text="${comment.text}">comment text</p>
-                                    </div>
-                                </div>
+                                <!-----------   Show comments  ------------>
+                                <div th:replace="fragments/interactable :: show-comments(${interactable})"></div>
                               
-                                <form th:action="@{/{username}/{photoId}/{loggedInUser}/comment-photo (username=${user.username}, photoId=${photo.Id}, loggedInUser=${loggedInUser.username})}" method="POST">
-                                    <input type="text" class="form-control" name="text" placeholder="add a comment"/>
-                                    <input class="btn btn-primary mt-2" type="submit" value="send" />
-                                </form>
+                                <!-----------   Add comment  ------------>
+                                <div th:replace="fragments/interactable :: add-comment(${user}, ${loggedInUser}, ${interactable})"></div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-<!--                <div th:each="photo : ${photos}">
-                    <img width="30%" th:src="@{/photos/{photoId} (photoId=${photo.id})}"/>
-                    <p th:text="${photo.description}">description</p>
-                    <form th:if="${user.username == loggedInUser}" th:action="@{/{loggedInUser}/{photoId}/change-profile-photo (loggedInUser=${loggedInUser},photoId=${photo.id})}" method="POST">
-                        <input class="btn btn-primary btn-sm m-3" type="submit" value="to profile photo">
-                    </form>
 
-                </div>-->
-
-                <!--    Add new photos    -->
+                <!-----------   Add new photos  ------------>
                 <div th:if="${user.username == loggedInUser.username}">
                     <h3>Add a new photo!</h3>
                     <form th:action="@{/{userId}/add-photo (userId=${user.id})}" method="POST" enctype="multipart/form-data">
@@ -106,20 +66,10 @@
                         <input type="text" name="description" placeholder="add description"/>
                         <input type="submit" value="Add" />            
                     </form>
-
                 </div>
                 
-                
             </section>
-        
         </section>
         
-        
-        
-        
-
-       
-
-
     </body>
 </html>

@@ -19,6 +19,7 @@ public interface WhoFollowsWhoRepository extends JpaRepository<WhoFollowsWho, Lo
     
     List<WhoFollowsWho> findByFollowerId(Long followerId);
     List<WhoFollowsWho> findByTheOneFollowedId(Long theOneFollowedId);
+    WhoFollowsWho findByFollowerIdAndTheOneFollowedId(Long followerId, Long theOneFollowedId);
     
 //    @Query("SELECT a FROM Account a Who_follows_who b"
 //       + "JOIN Account a ON Account.id = Who_follows_who.the_one_followed_id "

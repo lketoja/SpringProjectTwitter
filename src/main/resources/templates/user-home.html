@@ -10,16 +10,16 @@
     </head>
     <body class="container-fluid px-5 py-0">
         
+        <!---------    Navbar    ---------->
         <div th:replace="fragments/navbar :: navbar(${loggedInUser})"></div>
         
+        <!---------    Header    ---------->
         <div th:replace="fragments/header :: header(${user}, ${loggedInUser})"></div>
-        
-  
         
         <section class="row py-4">
             <section class="col-md-4">
                 
-                <!--    Show "link-to-gallery-photos"    -->
+                <!---------    Show "link-to-gallery-photos"    ---------->
                 <div class="container-fluid white-area p-3 mb-3">
                     <a th:href="@{/{username}/photos (username=${user.username})}">                 
                         <h5 class="link-text mb-3">Check out my gallery!</h5>
@@ -31,51 +31,17 @@
                     </a>
                 </div>
                 
-                <div class="white-area p-3 mb-3">
-                    <h5 class="heading mb-3">Following</h5>
-                    
-                    <div th:each="followedUser : ${whoIFollow}">
-                        <div th:switch="${followedUser.profilePhoto}">
-                            <img th:case="null" class="follow-profile-photo" th:src="@{/img/defaultProfilePicture.png}"/>
-                            <img th:case="*" class="follow-profile-photo" th:src="@{/photos/{photoId} (photoId=${followedUser.profilePhoto.id})}"/>
-                        </div>
-                        <a class="follow-text" th:href="@{/{username} (username=${followedUser.username})}">
-                            <p th:text="${followedUser.username}">username</p>
-                        </a>
-                        
-                    </div>
-
-<!--                    <div th:each="username : ${whoIFollow}">
-                        <a class="follow-text" th:href="@{/{username} (username=${user.username})}">
-                            <p th:text="${username}">text</p>
-                        </a>
-                    </div>-->
-                </div> 
+                <!---------    Following    ---------->
+                <div th:replace="fragments/follow:: following(${whoIFollow})"></div>
                 
-                <div class="white-area p-3 mb-3">
-                    <h5 class="heading mb-3">Followers</h5>
-
-                    <div class="d-flex flex-row justify-content-between" th:each="follower : ${whoFollowsMe}">
-                        
-                        <div th:switch="${follower.profilePhoto}">
-                            <img th:case="null" class="follow-profile-photo" th:src="@{/img/defaultProfilePicture.png}"/>
-                            <img th:case="*" class="follow-profile-photo" th:src="@{/photos/{photoId} (photoId=${follower.profilePhoto.id})}"/>
-                        </div>
-                        <p th:text="${follower.username}">text</p>
-
-                        
-<!--                        <form th:action="@{/{username}/{whoFollowsWhoId}/remove-follower (username=${user.username}, whoFollowsWhoId=${whoFollowsWho.id})}" method="POST">
-                            <input class="btn btn-primary btn-sm" type="submit" value="Block">
-                        </form>-->
-                    </div>
-                </div>
-
-                
+                <!---------    Followers    ---------->
+                <div th:replace="fragments/follow:: followers(${whoFollowsMe})"></div>                
+              
             </section>
             
             <section class="col-md-8">
                 
-                <!--    Add new message    -->
+                <!---------    Add new message    --------->
                 <div th:if="${user == loggedInUser}" class="white-area p-3 mb-3">                
                     <h5 class="heading mb-3">Add a new message!</h5>
                     <form th:action="@{/{username}/add-message (username=${user.username})}" method="POST">
@@ -84,49 +50,23 @@
                     </form>     
                 </div>
 
-                <!--    Show message    -->
-                <div th:each="message : ${messages}" class="media mb-2 p-3" style="background-color: #fff;">
-                    <div th:switch="${message.user.profilePhoto}">
+                <!---------    Show messages    --------->
+                <div th:each="interactable : ${messages}" class="media mb-2 p-3" style="background-color: #fff;">
+                    <div th:switch="${interactable.user.profilePhoto}">
                         <img th:case="null" class="message-profile-photo mr-3" th:src="@{/img/defaultProfilePicture.png}"/>
-                        <img th:case="*" class="message-profile-photo mr-3" th:src="@{/photos/{photoId} (photoId=${message.user.profilePhoto.id})}"/>
+                        <img th:case="*" class="message-profile-photo mr-3" th:src="@{/photos/{photoId} (photoId=${interactable.user.profilePhoto.id})}"/>
                     </div>
                     <div class="media-body">
-                        <p th:text="${message.text}">text</p>
+                        <p th:text="${interactable.text}">text</p>
                         
-                        <!--    Like     -->
-                        <div class="d-flex justify-content-end align-items-center">
-                            <p class="m-2">likes <span th:text="${#lists.size(message.likes)}">likes count</span></p>
-                            <div th:switch="${#lists.contains(message.likes, loggedInUser)}">
-                            
-                                <form th:case="false" th:action="@{/{username}/{messageId}/{loggedInUser}/like-message (username=${user.username},messageId=${message.id}, loggedInUser=${loggedInUser.username})}" method="POST">
-                                    <button type="submit" class="btn btn-primary btn-sm mx-2"><i class="fa fa-thumbs-up mr-2"></i>Like</button>  
-                                </form>
-                                <form th:case="true" th:action="@{/{username}/{messageId}/{loggedInUser}/dont-like-message (username=${user.username},messageId=${message.id}, loggedInUser=${loggedInUser.username})}" method="POST">
-                                    <button type="submit" class="btn btn-primary btn-sm mx-2"></i>Don't Like</button>  
-                                </form>
-                            </div>
-                        </div>
-
-                        <!--   Show Comments    -->
-                        <div th:each="comment : ${message.comments}" class="media mt-2">
-                            <div th:switch="${comment.user.profilePhoto}">
-                                <img th:case="null" class="message-profile-photo mr-3" th:src="@{/img/defaultProfilePicture.png}"/>
-                                <img th:case="*" class="message-profile-photo mr-3" th:src="@{/photos/{photoId} (photoId=${comment.user.profilePhoto.id})}"/>
-                            </div>                        
-                            <div class="media-body">
-                                <a class="link-text" th:href="@{/{username} (username=${comment.user.username})}">
-                                    <p class="lead" th:text="${comment.user.username}"></p>
-                                </a>
-                                <p th:text="${comment.text}">comment text</p>
-                            </div>
-                        </div>
-
-                        <!--   Add Comment    -->
-                        <form th:action="@{/{username}/{messageId}/{loggedInUser}/comment-message (username=${user.username}, messageId=${message.Id}, loggedInUser=${loggedInUser.username})}" method="POST">
-                            <input type="text" class="form-control" name="text" placeholder="add a comment"/>
-                            <input class="btn btn-primary mt-2" type="submit" value="send" />
-                        </form>
-                        <br>
+                        <div th:replace="fragments/interactable :: like(${interactable.likes})"></div>
+                       
+                        <!---------   Show Comments    --------->
+                        <div th:replace="fragments/interactable :: show-comments(${interactable})"></div>
+                        
+                        <!---------   Add Comment    --------->
+                        <div th:replace="fragments/interactable :: add-comment(${user}, ${loggedInUser}, ${interactable})"></div>
+                        
                     </div>
                 </div>
             </section>

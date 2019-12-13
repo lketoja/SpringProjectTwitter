@@ -5,18 +5,18 @@
  */
 package projekti;
 
-
 import java.util.List;
-
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.NoRepositoryBean;
 
 /**
  *
  * @author Lotta
  */
-public interface PhotoRepository extends InteractableBaseRepository<Photo>{
+@NoRepositoryBean
+public interface InteractableBaseRepository<T extends Interactable> 
+extends JpaRepository<T, Long> {
     
-    
-    
-    public List<Photo> findByUserId(Long userId);
-    
+
+
 }

@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Hello world</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" th:href="@{/styles/styles.css}"/>
+        <script src="https://kit.fontawesome.com/9c3156e679.js" crossorigin="anonymous"></script>
+    </head>
+    <body class="container-fluid px-5 py-0">
+        
+       
+        
+        <!--    Like     -->
+        <div th:fragment="like (interactable.likes)"> 
+                        <div class="d-flex justify-content-end align-items-center">
+                            <p class="m-2">likes <span th:text="${#lists.size(interactable.likes)}">likes count</span></p>
+                            <div th:switch="${#lists.contains(interactable.likes, loggedInUser)}">
+                            
+                                <form th:case="false" th:action="@{/{username}/{interactableId}/{loggedInUser}/like (username=${user.username},interactableId=${interactable.id}, loggedInUser=${loggedInUser.username})}" method="POST">
+                                    <button type="submit" class="btn btn-primary btn-sm mx-2"><i class="fa fa-thumbs-up mr-2"></i>Like</button>  
+                                </form>
+                                <form th:case="true" th:action="@{/{username}/{interactableId}/{loggedInUser}/dont-like (username=${user.username}, interactableId=${interactable.id}, loggedInUser=${loggedInUser.username})}" method="POST">
+                                    <button type="submit" class="btn btn-primary btn-sm mx-2"></i>Don't Like</button>  
+                                </form>
+                            </div>
+                        </div>
+        </div>
+        
+        <div th:fragment="show-comments (interactable)">                
+                        <div th:each="comment : ${interactable.comments}" class="media mt-2">
+                            <div th:switch="${comment.user.profilePhoto}">
+                                <img th:case="null" class="message-profile-photo mr-3" th:src="@{/img/defaultProfilePicture.png}"/>
+                                <img th:case="*" class="message-profile-photo mr-3" th:src="@{/photos/{photoId} (photoId=${comment.user.profilePhoto.id})}"/>
+                            </div>                        
+                            <div class="media-body">
+                                <a class="link-text" th:href="@{/{username} (username=${comment.user.username})}">
+                                    <p class="lead" th:text="${comment.user.username}"></p>
+                                </a>
+                                <p th:text="${comment.text}">comment text</p>
+                            </div>
+                        </div>
+        </div>
+        
+        <div th:fragment="add-comment (user, loggedInUser, interactable)">
+                        <form th:action="@{/{username}/{interactableId}/{loggedInUser}/comment(username=${user.username}, interactableId=${interactable.Id}, loggedInUser=${loggedInUser.username})}" method="POST">
+                            <input type="text" class="form-control" name="text" placeholder="add a comment"/>
+                            <input class="btn btn-primary mt-2" type="submit" value="send" />
+                        </form>
+        </div>
+  
+
+    </body>
+</html>

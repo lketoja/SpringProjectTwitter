@@ -10,20 +10,19 @@ package projekti;
  * @author Lotta
  */
 
-import java.awt.print.Pageable;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,6 +56,9 @@ public class UserController {
     @Autowired
     private CommentRepository commentRepo;
     
+    @Autowired
+    private InteractableRepository interactableRepo;
+    
     @GetMapping("/")
     public String afterLogin(){
         Account loggedInUser = userServ.getLoggedInUser();
@@ -69,12 +71,11 @@ public class UserController {
     }
     
     @PostMapping("/create-account")
-    public String saveNewUser(@RequestParam String name,
-            @RequestParam String username, @RequestParam String password){
+    public String saveNewUser(@RequestParam String username, @RequestParam String password){
          if (userRepo.findByUsername(username) != null) {
             return "redirect:/accounts";
         }
-        userRepo.save(new Account(name, username, 
+        userRepo.save(new Account(username, 
                 passwordEncoder.encode(password)));
         return "redirect:/" + username;
     }
@@ -88,9 +89,10 @@ public class UserController {
         }
         model.addAttribute("user", user);
         model.addAttribute("allUsers", userServ.getAllOtherUsers(user));
+       
         
-//        Pageable pageable = (Pageable) PageRequest.of(0,10);
-        model.addAttribute("messages", messageRepo.findAll());
+        Pageable pageable = (Pageable) PageRequest.of(0,10);
+        model.addAttribute("messages", messageRepo.findAll(pageable));
        
         model.addAttribute("photos", photoRepo.findByUserId(user.getId()));
 //        System.out.println("tässä whoIFollow");
@@ -104,8 +106,8 @@ public class UserController {
 //        System.out.println(whoFollowsWhoRepo.findFollowingUsernamesByAccountId(user.getId()));
 //        model.addAttribute("whoIFollow", whoFollowsWhoRepo.findFollowingUsernamesByAccountId(user.getId()));
 //        model.addAttribute("whoFollowsMe", whoFollowsWhoRepo.findByTheOneFollowedId(user.getId()));
-        model.addAttribute("whoIFollow", userServ.getFollowingAsUserObjects(user));
-        model.addAttribute("whoFollowsMe", userServ.getFollowersAsUserObjects(user));
+        model.addAttribute("whoIFollow", userServ.findByFollowerIdAsUserObjects(user));
+        model.addAttribute("whoFollowsMe", userServ.findByTheOneFollowedAsUserObjects(user));
      
         model.addAttribute("loggedInUser", userServ.getLoggedInUser());
         
@@ -143,54 +145,56 @@ public class UserController {
         return "redirect:/" + user.getUsername();
     }
     
-    @PostMapping("/{username}/{messageId}/{loggedInUser}/like-message")
-    public String likeMessage(@PathVariable Long messageId, @PathVariable String username, 
-            @PathVariable String loggedInUser){
-        Message message = messageRepo.getOne(messageId);
-        Account currentUser = userRepo.findByUsername(loggedInUser);
-        message.getLikes().add(currentUser);
-        messageRepo.save(message);
-        
-        return "redirect:/{username}";
-    }
-    
-    @PostMapping("/{username}/{messageId}/{loggedInUser}/dont-like-message")
-    public String dontLikeMessage(@PathVariable Long messageId, @PathVariable String username, 
-            @PathVariable String loggedInUser){
-        Message message = messageRepo.getOne(messageId);
-        Account currentUser = userRepo.findByUsername(loggedInUser);
-        message.getLikes().remove(currentUser);
-        messageRepo.save(message);
-        
-        return "redirect:/{username}";
-    }
-    
-    @PostMapping("/{username}/{messageId}/{loggedInUser}/comment-message")
-    public String commentMessage(@PathVariable Long messageId, @PathVariable String username, 
-            @PathVariable String loggedInUser, @RequestParam String text){
-        Comment comment = new Comment(userRepo.findByUsername(loggedInUser), text);
-        commentRepo.save(comment);
-        Message message = messageRepo.getOne(messageId);
-        message.getComments().add(comment);
-        messageRepo.save(message);
-        
-        return "redirect:/{username}";
-    }
     
     
-    @PostMapping("/{userId}/{loggedInUser}/follow-me")
-    public String followMe(@PathVariable Long userId, @PathVariable String loggedInUser){
-        Account theOneFollowed = userRepo.getOne(userId);
+//    @PostMapping("/{username}/{messageId}/{loggedInUser}/dont-like-message")
+//    public String dontLikeMessage(@PathVariable Long messageId, @PathVariable String username, 
+//            @PathVariable String loggedInUser){
+//        Message message = messageRepo.getOne(messageId);
+//        Account currentUser = userRepo.findByUsername(loggedInUser);
+//        message.getLikes().remove(currentUser);
+//        messageRepo.save(message);
+//        
+//        return "redirect:/{username}";
+//    }
+    
+//    @PostMapping("/{username}/{messageId}/{loggedInUser}/comment-message")
+//    public String commentMessage(@PathVariable Long messageId, @PathVariable String username, 
+//            @PathVariable String loggedInUser, @RequestParam String text){
+//        Comment comment = new Comment(userRepo.findByUsername(loggedInUser), text);
+//        commentRepo.save(comment);
+//        Message message = messageRepo.getOne(messageId);
+//        message.getComments().add(comment);
+//        messageRepo.save(message);
+//        
+//        return "redirect:/{username}";
+//    }
+    
+    
+    @PostMapping("/{username}/{loggedInUser}/follow-me")
+    public String followMe(@PathVariable String username, @PathVariable String loggedInUser){
+        Account theOneFollowed = userRepo.findByUsername(username);
         Account follower = userRepo.findByUsername(loggedInUser);
-        WhoFollowsWho wfw = new WhoFollowsWho(theOneFollowed, follower, LocalDateTime.now());
-        whoFollowsWhoRepo.save(wfw);
-        
-        return "redirect:/" + theOneFollowed.getUsername();
+        WhoFollowsWho whoFollowsWho = new WhoFollowsWho(theOneFollowed, follower, LocalDateTime.now());
+        whoFollowsWhoRepo.save(whoFollowsWho);        
+        return "redirect:/{username}";
     }
     
-    @PostMapping("/{username}/{whoFollowsWhoId}/remove-follower")
-    public String removeFollower(@PathVariable String username, @PathVariable Long whoFollowsWhoId){
-        whoFollowsWhoRepo.deleteById(whoFollowsWhoId);
+    @PostMapping("/{username}/{loggedInUser}/dont-follow")
+    public String dontFollow(@PathVariable String username, @PathVariable String loggedInUser){
+        Long theOneFollowedId = userRepo.findByUsername(username).getId();
+        Long followerId = userRepo.findByUsername(loggedInUser).getId();
+        WhoFollowsWho whoFollowsWho = whoFollowsWhoRepo.findByFollowerIdAndTheOneFollowedId(followerId, theOneFollowedId);
+        whoFollowsWhoRepo.delete(whoFollowsWho);        
+        return "redirect:/{username}";
+    }
+    
+    @PostMapping("/{username}/{loggedInUser}/block-follower")
+    public String removeFollower(@PathVariable String username, @PathVariable String loggedInUser){
+        Long theOneFollowedId = userRepo.findByUsername(loggedInUser).getId();
+        Long followerId = userRepo.findByUsername(username).getId();
+        WhoFollowsWho whoFollowsWho = whoFollowsWhoRepo.findByFollowerIdAndTheOneFollowedId(followerId, theOneFollowedId);
+        whoFollowsWhoRepo.delete(whoFollowsWho);        
         return "redirect:/{username}";
     }
     

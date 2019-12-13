@@ -33,7 +33,7 @@ public class AccountService {
     
     }
     
-    public List<Account> getFollowingAsUserObjects(Account user) {
+    public List<Account> findByFollowerIdAsUserObjects(Account user) {
 
         List<Account> following = new ArrayList<>();
         List<WhoFollowsWho> followingAsWFW = whoFollowsWhoRepo.findByFollowerId(user.getId());
@@ -44,7 +44,7 @@ public class AccountService {
         return following;
     }
     
-    public List<Account> getFollowersAsUserObjects(Account user) {
+    public List<Account> findByTheOneFollowedAsUserObjects(Account user) {
 
         List<Account> followers = new ArrayList<>();
         List<WhoFollowsWho> followersAsWFW = whoFollowsWhoRepo.findByTheOneFollowedId(user.getId());

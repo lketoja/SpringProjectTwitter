@@ -29,13 +29,22 @@
                         <h1 th:text="${user.username}">name</h1>
                         <!--    Follow me    -->
 
-                        <div th:if="${user.username != loggedInUser.username}">
-    <!--                        <div th:switch="">-->
-                                <form th:action="@{/{userId}/{loggedInUser}/follow-me (userId=${user.id}, loggedInUser=${loggedInUser.username})}" method="POST">
-                                        <input type="submit" value="Follow Me!" class="btn btn-dark mt-2 mb-3">
+                        <div th:if="${user != loggedInUser}">
+                            <div th:switch="${#lists.contains(whoFollowsMe, loggedInUser)}">
+                                <form th:case="false" th:action="@{/{username}/{loggedInUser}/follow-me (username=${user.username}, loggedInUser=${loggedInUser.username})}" method="POST">
+                                        <input type="submit" value="Follow!" class="btn btn-dark mt-2 mb-3">
                                 </form>
-    <!--                        </div>-->
-                        </div>                
+                                <form class="block-form" th:case="true" th:action="@{/{username}/{loggedInUser}/dont-follow (username=${user.username}, loggedInUser=${loggedInUser.username})}" method="POST">
+                                        <input type="submit" value="Don't follow!" class="btn btn-dark mt-2 mb-3">
+                                </form>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-2" th:if="${#lists.contains(whoIFollow, loggedInUser)}">
+                            <p>This user is following you.</p>
+                            <form th:action="@{/{username}/{loggedInUser}/block-follower (username=${user.username}, loggedInUser=${loggedInUser.username})}" method="POST">
+                                <input class="btn btn-dark mx-3 btn-sm" type="submit" value="Block">
+                            </form>
+                        </div>
                     </div>
 
                 </div>

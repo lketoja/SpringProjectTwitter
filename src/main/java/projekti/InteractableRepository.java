@@ -5,18 +5,10 @@
  */
 package projekti;
 
-
-import java.util.List;
-
-
 /**
  *
  * @author Lotta
  */
-public interface PhotoRepository extends InteractableBaseRepository<Photo>{
-    
-    
-    
-    public List<Photo> findByUserId(Long userId);
+public interface InteractableRepository extends InteractableBaseRepository<Interactable>{
     
 }

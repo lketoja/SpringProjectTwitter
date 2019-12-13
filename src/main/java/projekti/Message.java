@@ -9,42 +9,29 @@ package projekti;
  *
  * @author Lotta
  */
+import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.AbstractPersistable;
+
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Message extends AbstractPersistable<Long> {
-    
-    @ManyToOne
-    private Account user; 
+@DiscriminatorValue("Message")
+public class Message extends Interactable implements Serializable {
+
     private String text;
     private LocalDateTime sendTime;
     
-    @ManyToMany
-    private List<Account> likes;
-    
-    @OneToMany
-    private List<Comment> comments;
-    
-   
-    
     public Message(Account user, String text, LocalDateTime sendTime){
-        this.user=user;
+        super(user);
         this.text=text;
         this.sendTime=sendTime;
     }
-
-    
+ 
 }

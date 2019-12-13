@@ -43,10 +43,9 @@ public class PhotoController {
         Long userId = user.getId();
         model.addAttribute("user", user);
         model.addAttribute("loggedInUser", userServ.getLoggedInUser());
-        model.addAttribute("whoIFollow", whoFollowsWhoRepo.findFollowingUsernamesByAccountId(userId));
-        model.addAttribute("photos", photoRepo.findByUserId(userId));
-        
-        
+        model.addAttribute("whoIFollow", userServ.findByFollowerIdAsUserObjects(user));
+        model.addAttribute("whoFollowsMe", userServ.findByTheOneFollowedAsUserObjects(user));
+        model.addAttribute("photos", photoRepo.findByUserId(userId));         
         return "photos";
     }
 
@@ -72,14 +71,14 @@ public class PhotoController {
         return "redirect:/{username}/photos";
     }
     
-    @PostMapping("/{username}/{photoId}/{loggedInUser}/like-photo")
-    public String likePhoto(@PathVariable String username,
-            @PathVariable Long photoId){
-        Photo photo = photoRepo.getOne(photoId);
-        Account loggedInUser = userServ.getLoggedInUser();
-        photo.getLikes().add(loggedInUser);
-        photoRepo.save(photo);
-        return "redirect:/{username}/photos";
-    }
+//    @PostMapping("/{username}/{photoId}/{loggedInUser}/like-photo")
+//    public String likePhoto(@PathVariable String username,
+//            @PathVariable Long photoId){
+//        Photo photo = photoRepo.getOne(photoId);
+//        Account loggedInUser = userServ.getLoggedInUser();
+//        photo.getLikes().add(loggedInUser);
+//        photoRepo.save(photo);
+//        return "redirect:/{username}/photos";
+//    }
     
 }

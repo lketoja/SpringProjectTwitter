@@ -9,28 +9,22 @@ package projekti;
  *
  * @author Lotta
  */
-import java.util.ArrayList;
-
-import java.util.List;
+import java.io.Serializable;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.AbstractPersistable;
+
 
 @Entity
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Photo extends AbstractPersistable<Long> {
+@DiscriminatorValue("Photo")
+public class Photo extends Interactable implements Serializable {
    
-    @ManyToOne
-    private Account user;
-    
     @Lob
     private byte[] content;
     
@@ -38,51 +32,16 @@ public class Photo extends AbstractPersistable<Long> {
     private String mediaType;
     private Long photoSize;
     
-    @OneToMany
-    private List<Comment> comments;
-    
-    @ManyToMany
-    public List<Account> likes;
-    
-    private boolean profilePhoto;
-    
     public Photo(Account user, byte[] content, String description,
             String mediaType, Long size){
-        this.user = user;
+        super(user);
         this.content = content;
         this.description = description;
         this.mediaType = mediaType;
         photoSize = size;
         
-        likes = new ArrayList<>();
-        profilePhoto = false;
         
     }
-
-    public String getMediaType() {
-        return mediaType;
-    }
-
-    public long getPhotoSize() {
-        return photoSize;
-    }
-    
-    public byte[] getContent(){
-        return content;
-    }
-    
-    public String getDescription(){
-        return description;
-    }
-    
-    public List<Comment> getComments(){
-        return comments;
-    }
-    
-    public List<Account> getLikes(){
-        return likes;
-    }
-    
-    
+   
     
 }
