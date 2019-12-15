@@ -31,7 +31,8 @@ public class PhotoController {
     private AccountService userServ;
     
     @Autowired
-    private WhoFollowsWhoRepository whoFollowsWhoRepo;
+    private WhoFollowsWhoService whoFollowsWhoServ;
+
     
     @Autowired
     private CommentRepository commentRepo;
@@ -43,8 +44,8 @@ public class PhotoController {
         Long userId = user.getId();
         model.addAttribute("user", user);
         model.addAttribute("loggedInUser", userServ.getLoggedInUser());
-        model.addAttribute("whoIFollow", userServ.findByFollowerIdAsUserObjects(user));
-        model.addAttribute("whoFollowsMe", userServ.findByTheOneFollowedAsUserObjects(user));
+        model.addAttribute("whoIFollow", whoFollowsWhoServ.findByFollowerIdAsAccountAndFollowTimeObjects(user));
+        model.addAttribute("whoFollowsMe", whoFollowsWhoServ.findByTheOneFollowedAsAccountAndFollowTimeObjects(user));
         model.addAttribute("photos", photoRepo.findByUserId(userId));         
         return "photos";
     }
@@ -52,6 +53,7 @@ public class PhotoController {
     @PostMapping("/{loggedInUser}/{photoId}/change-profile-photo")
     public String changeProfilePhoto(@PathVariable String loggedInUser, 
             @PathVariable Long photoId){
+        System.out.println("tässä username" + loggedInUser);
         Account user = userRepo.findByUsername(loggedInUser);
         Photo photo = photoRepo.getOne(photoId);
         user.setProfilePhoto(photo);

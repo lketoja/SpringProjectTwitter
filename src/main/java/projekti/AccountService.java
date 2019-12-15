@@ -33,28 +33,6 @@ public class AccountService {
     
     }
     
-    public List<Account> findByFollowerIdAsUserObjects(Account user) {
-
-        List<Account> following = new ArrayList<>();
-        List<WhoFollowsWho> followingAsWFW = whoFollowsWhoRepo.findByFollowerId(user.getId());
-    
-        for (WhoFollowsWho wfw : followingAsWFW) {
-            following.add(wfw.getTheOneFollowed());
-        }
-        return following;
-    }
-    
-    public List<Account> findByTheOneFollowedAsUserObjects(Account user) {
-
-        List<Account> followers = new ArrayList<>();
-        List<WhoFollowsWho> followersAsWFW = whoFollowsWhoRepo.findByTheOneFollowedId(user.getId());
-    
-        for (WhoFollowsWho whoFollowsWho : followersAsWFW) {
-            followers.add(whoFollowsWho.getFollower());
-        }
-        return followers;
-    }
-    
     public List<Account> getAllOtherUsers(Account user){
         List<Account> users = userRepo.findAll();
         users.remove(user);

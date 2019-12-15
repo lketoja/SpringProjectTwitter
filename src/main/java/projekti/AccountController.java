@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
-public class UserController {
+public class AccountController {
     
     @Autowired
     private AccountRepository userRepo;
@@ -54,15 +54,33 @@ public class UserController {
     private WhoFollowsWhoRepository whoFollowsWhoRepo;
     
     @Autowired
+    private WhoFollowsWhoService whoFollowsWhoServ;
+    
+    @Autowired
     private CommentRepository commentRepo;
     
     @Autowired
     private InteractableRepository interactableRepo;
     
+//    @GetMapping("/")
+//    public String afterLogin(){
+//        Account loggedInUser = userServ.getLoggedInUser();
+//        return "redirect:/" + loggedInUser.getUsername();
+//    }
+    
     @GetMapping("/")
+    public String home() {
+        return "redirect:/login";
+    }
+    
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+    
+    @GetMapping("/after-login")
     public String afterLogin(){
-        Account loggedInUser = userServ.getLoggedInUser();
-        return "redirect:/" + loggedInUser.getUsername();
+        return "redirect:/" + userServ.getLoggedInUser().getUsername();
     }
     
     @GetMapping("/create-account")
@@ -73,7 +91,7 @@ public class UserController {
     @PostMapping("/create-account")
     public String saveNewUser(@RequestParam String username, @RequestParam String password){
          if (userRepo.findByUsername(username) != null) {
-            return "redirect:/accounts";
+            return "redirect:/create-account";
         }
         userRepo.save(new Account(username, 
                 passwordEncoder.encode(password)));
@@ -84,6 +102,7 @@ public class UserController {
     public String userHome(Model model, @PathVariable String username){
         System.out.println(userRepo.findAll());
         Account user = userRepo.findByUsername(username);
+        Long userId = user.getId();
         if(user==null){
             System.out.println("wtf");
         }
@@ -91,23 +110,16 @@ public class UserController {
         model.addAttribute("allUsers", userServ.getAllOtherUsers(user));
        
         
-        Pageable pageable = (Pageable) PageRequest.of(0,10);
-        model.addAttribute("messages", messageRepo.findAll(pageable));
+        //Pageable pageable = (Pageable) PageRequest.of(0,10, Sort.by("sendTime"));
+        model.addAttribute("messages", messageRepo.findByUserIdOrFollowingIds(userId));
        
-        model.addAttribute("photos", photoRepo.findByUserId(user.getId()));
-//        System.out.println("tässä whoIFollow");
-//        System.out.println(whoFollowsWhoRepo.findFollowingUsernamesByAccountId(user.getId()));
-//        
-//        List<Object> objektit = whoFollowsWhoRepo.findFollowingByAccountId(user.getId());
-//        List<Account> following = new ArrayList<>();
-//        for(Object o : objektit){
-//            Account a = (Account) o;
-//            following.add(a);
-//        System.out.println(whoFollowsWhoRepo.findFollowingUsernamesByAccountId(user.getId()));
-//        model.addAttribute("whoIFollow", whoFollowsWhoRepo.findFollowingUsernamesByAccountId(user.getId()));
-//        model.addAttribute("whoFollowsMe", whoFollowsWhoRepo.findByTheOneFollowedId(user.getId()));
-        model.addAttribute("whoIFollow", userServ.findByFollowerIdAsUserObjects(user));
-        model.addAttribute("whoFollowsMe", userServ.findByTheOneFollowedAsUserObjects(user));
+        model.addAttribute("photos", photoRepo.findByUserId(userId));
+        
+        model.addAttribute("whoIFollow", userRepo.findAccountByFollowerId(userId));
+        model.addAttribute("whoFollowsMe", userRepo.findAccountByTheOneFollowedId(userId));
+
+        model.addAttribute("whoIFollowAndTime", whoFollowsWhoServ.findByFollowerIdAsAccountAndFollowTimeObjects(user));
+        model.addAttribute("whoFollowsMeAndTime", whoFollowsWhoServ.findByTheOneFollowedAsAccountAndFollowTimeObjects(user));
      
         model.addAttribute("loggedInUser", userServ.getLoggedInUser());
         
@@ -123,15 +135,7 @@ public class UserController {
         return new ResponseEntity<>(photo.getContent(), headers, HttpStatus.CREATED);
     }
     
-    @PostMapping("/{username}/add-message")
-    public String saveMessage(@PathVariable String username, @RequestParam String text){
-        Account user = userRepo.findByUsername(username);
-        Message message = new Message(user, text, LocalDateTime.now());
-        messageRepo.save(message);
-        //user.getMessages().add(message);
-        //userRepo.save(user);
-        return "redirect:/{username}";
-    }
+    
     
     @PostMapping("/{userId}/add-photo")
     public String savePhoto(@RequestParam("file") MultipartFile file, 
@@ -146,29 +150,7 @@ public class UserController {
     }
     
     
-    
-//    @PostMapping("/{username}/{messageId}/{loggedInUser}/dont-like-message")
-//    public String dontLikeMessage(@PathVariable Long messageId, @PathVariable String username, 
-//            @PathVariable String loggedInUser){
-//        Message message = messageRepo.getOne(messageId);
-//        Account currentUser = userRepo.findByUsername(loggedInUser);
-//        message.getLikes().remove(currentUser);
-//        messageRepo.save(message);
-//        
-//        return "redirect:/{username}";
-//    }
-    
-//    @PostMapping("/{username}/{messageId}/{loggedInUser}/comment-message")
-//    public String commentMessage(@PathVariable Long messageId, @PathVariable String username, 
-//            @PathVariable String loggedInUser, @RequestParam String text){
-//        Comment comment = new Comment(userRepo.findByUsername(loggedInUser), text);
-//        commentRepo.save(comment);
-//        Message message = messageRepo.getOne(messageId);
-//        message.getComments().add(comment);
-//        messageRepo.save(message);
-//        
-//        return "redirect:/{username}";
-//    }
+ 
     
     
     @PostMapping("/{username}/{loggedInUser}/follow-me")

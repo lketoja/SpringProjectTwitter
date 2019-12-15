@@ -21,28 +21,28 @@
                 
                 <!---------    Show "link-to-gallery-photos"    ---------->
                 <div class="container-fluid white-area p-3 mb-3">
-                    <a th:href="@{/{username}/photos (username=${user.username})}">                 
-                        <h5 class="link-text mb-3">Check out my gallery!</h5>
-                        <div class="row">
-                            <div th:each="photo : ${photos}" class="col-6" >
-                                <img th:src="@{/photos/{photoId} (photoId=${photo.id})}" class="sidebar-photo"/>
+                    <a class="link-text" th:href="@{/{username}/photos (username=${user.username})}">                 
+                        <h5 class="link-text">Check out my gallery!</h5>
+                        <div class="row" id="gallery-add">
+                            <div th:each="photo : ${photos}" class="col-6 gallery-add-column" >
+                                <img th:src="@{/photos/{photoId} (photoId=${photo.id})}" class="mt-3 sidebar-photo"/>
                             </div>
                         </div>                   
                     </a>
                 </div>
                 
                 <!---------    Following    ---------->
-                <div th:replace="fragments/follow:: following(${whoIFollow})"></div>
+                <div th:replace="fragments/follow:: following(${whoIFollowAndTime})"></div>
                 
                 <!---------    Followers    ---------->
-                <div th:replace="fragments/follow:: followers(${whoFollowsMe})"></div>                
+                <div th:replace="fragments/follow:: followers(${whoFollowsMeAndTime})"></div>                
               
             </section>
             
             <section class="col-md-8">
                 
                 <!---------    Add new message    --------->
-                <div th:if="${user == loggedInUser}" class="white-area p-3 mb-3">                
+                <div th:if="${user == loggedInUser}" class="white-area p-4 mb-3">                
                     <h5 class="heading mb-3">Add a new message!</h5>
                     <form th:action="@{/{username}/add-message (username=${user.username})}" method="POST">
                         <input class="form-control" type="textarea" name="text" placeholder="What's on your mind?"/>
@@ -57,8 +57,14 @@
                         <img th:case="*" class="message-profile-photo mr-3" th:src="@{/photos/{photoId} (photoId=${interactable.user.profilePhoto.id})}"/>
                     </div>
                     <div class="media-body">
-                        <p th:text="${interactable.text}">text</p>
-                        
+                        <div class="d-flex">
+                            <a class="link-text" th:href="@{/{username} (username=${interactable.user.username})}">
+                                <p class="lead mb-1" th:text="${interactable.user.username}"></p>
+                            </a>
+                            <p class="ml-5 mb-1 pt-1 text-muted" th:text="${#temporals.format(interactable.sendTime, 'd.M.yyyy HH:mm')}">send time</p>
+                        </div>
+                        <p class="mb-1" th:text="${interactable.text}">text</p>
+                       
                         <div th:replace="fragments/interactable :: like(${interactable.likes})"></div>
                        
                         <!---------   Show Comments    --------->
@@ -72,12 +78,9 @@
             </section>
         
         </section>
+    
+    <script th:src="@{/javascript/searchUsers.js}"></script>
         
-        
-        
-        
-        
-
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>  

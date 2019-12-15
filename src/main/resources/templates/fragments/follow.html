@@ -10,32 +10,38 @@
     </head>
     <body class="container-fluid px-5 py-0">
         
-        <div th:fragment="following (whoIFollow)">    
+        <div th:fragment="following (whoIFollowAndTime)">    
                 <div class="white-area p-3 mb-3">
                     <h5 class="heading mb-3">Following</h5>
-                    <div class="d-flex flex-row" th:each="followedUser : ${whoIFollow}">
-                        <div class="mr-3" th:switch="${followedUser.profilePhoto}">
+                    <div class="d-flex flex-row" th:each="followedUserAndTime : ${whoIFollowAndTime}">
+                        <div class="mr-3" th:switch="${followedUserAndTime.user.profilePhoto}">
                             <img th:case="null" class="follow-profile-photo" th:src="@{/img/defaultProfilePicture.png}"/>
-                            <img th:case="*" class="follow-profile-photo" th:src="@{/photos/{photoId} (photoId=${followedUser.profilePhoto.id})}"/>
+                            <img th:case="*" class="follow-profile-photo" th:src="@{/photos/{photoId} (photoId=${followedUserAndTime.user.profilePhoto.id})}"/>
                         </div>
-                        <a class="follow-text" th:href="@{/{username} (username=${followedUser.username})}">
-                            <p th:text="${followedUser.username}">username</p>
-                        </a>
+                        <div class="d-flex flex-column">
+                            <a class="black-link" th:href="@{/{username} (username=${followedUserAndTime.user.username})}">
+                                <p class="mb-1" th:text="${followedUserAndTime.user.username}">username</p>
+                            </a>
+                            <p class="follow-time">since <span th:text="${#temporals.format(followedUserAndTime.startTime, 'd.M.yyyy')}">send time</span></p>
+                        </div>
                     </div>
                 </div> 
         </div>
         
-        <div th:fragment="followers (whoFollowsMe)">
+        <div th:fragment="followers (whoFollowsMeAndTime)">
                 <div class="white-area p-3 mb-3">
                     <h5 class="heading mb-3">Followers</h5>
-                    <div class="d-flex flex-row" th:each="follower : ${whoFollowsMe}">                      
-                        <div class="mr-3" th:switch="${follower.profilePhoto}">
+                    <div class="d-flex flex-row" th:each="followerAndTime : ${whoFollowsMeAndTime}">                      
+                        <div class="mr-3" th:switch="${followerAndTime.user.profilePhoto}">
                             <img th:case="null" class="follow-profile-photo" th:src="@{/img/defaultProfilePicture.png}"/>
-                            <img th:case="*" class="follow-profile-photo" th:src="@{/photos/{photoId} (photoId=${follower.profilePhoto.id})}"/>
+                            <img th:case="*" class="follow-profile-photo" th:src="@{/photos/{photoId} (photoId=${followerAndTime.user.profilePhoto.id})}"/>
                         </div>
-                        <a class="follow-text" th:href="@{/{username} (username=${follower.username})}">
-                            <p th:text="${follower.username}">text</p>
-                        </a>
+                        <div class="d-flex flex-column">
+                            <a class="black-link" th:href="@{/{username} (username=${followerAndTime.user.username})}">
+                                <p class="mb-1" th:text="${followerAndTime.user.username}">text</p>
+                            </a>
+                            <p class="follow-time">since <span th:text="${#temporals.format(followerAndTime.startTime, 'd.M.yyyy')}">send time</span></p>
+                        </div>
                     </div>
                 </div>            
         </div>

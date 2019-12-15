@@ -37,9 +37,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/create-account").permitAll()
                 .antMatchers("/h2-console","/h2-console/**").permitAll()
+                .antMatchers("/css", "/css/*").permitAll()
                 .anyRequest().authenticated().and()
-                .formLogin().permitAll().and()
+                .formLogin().loginPage("/login").defaultSuccessUrl("/after-login", true).permitAll().and()
                 .logout().permitAll();
+                
     }
 
     @Autowired

@@ -18,34 +18,34 @@
         
         <div class="container-fluid header d-flex align-items-center">
          
-            <h1 class="p-5">Welcome to ThumbsUp!</h1>
+            <h1 class="p-5">Login to ThumbsUp!</h1>
                     
         </div>
 
             <div class="container-fluid white-area p-5">
                 
-                <h2 class="large-heading mb-3">Create Account</h2>
+                <h2 class="large-heading mb-3">Sign in</h2>
         
-                <form th:action="@{/create-account}" method="POST">
+                <form th:action="@{/login}" method="POST">
                     <div class="form-group">
-                        <label for="firstName" class="col-sm-3 control-label">Username: </label>
+                        <label for="username" class="col-sm-3 control-label">Username: </label>
                         <div class="col-sm-9">
-                            <input type="text" name="username" class="form-control" autofocus>
+                            <input type="text" id="username" name="username" class="form-control" autofocus>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="lastName" class="col-sm-3 control-label">Password: </label>
+                        <label for="password" class="col-sm-3 control-label">Password: </label>
                         <div class="col-sm-9">
-                            <input type="text" name="password" class="form-control" autofocus>
+                            <input type="password" id="password" name="password" class="form-control" autofocus>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary mt-2 ml-3">Register</button>
+                    <button type="submit" class="btn btn-primary mt-2 ml-3">Sign in</button>
                 </form>
                 
                 <div class="mt-5 ">
-                    <h3 class="heading ml-3">If you allready have an account, click here to sign in!</h3>
-                    <form th:action="@{/login}" method="POST">
-                        <button type="submit" class="btn btn-primary mt-3 ml-3">Sign in!</button>
+                    <h3 class="heading ml-3">If you don't have an account, click here to register!</h3>
+                    <form th:action="@{/create-account}" method="POST">
+                        <button type="submit" class="btn btn-primary mt-3 ml-3">Register</button>
                     </form>
                     
                 </div>

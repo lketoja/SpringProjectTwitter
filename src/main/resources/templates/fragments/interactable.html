@@ -10,12 +10,10 @@
     </head>
     <body class="container-fluid px-5 py-0">
         
-       
-        
-        <!--    Like     -->
+        <!---------    Like     --------->
         <div th:fragment="like (interactable.likes)"> 
-                        <div class="d-flex justify-content-end align-items-center">
-                            <p class="m-2">likes <span th:text="${#lists.size(interactable.likes)}">likes count</span></p>
+                        <div class="d-flex align-items-center justify-content-end">                
+                            <p class="m-2" th:text="${#lists.size(interactable.likes)}">likes count</p>
                             <div th:switch="${#lists.contains(interactable.likes, loggedInUser)}">
                             
                                 <form th:case="false" th:action="@{/{username}/{interactableId}/{loggedInUser}/like (username=${user.username},interactableId=${interactable.id}, loggedInUser=${loggedInUser.username})}" method="POST">
@@ -28,6 +26,7 @@
                         </div>
         </div>
         
+        <!---------    Show comments     --------->
         <div th:fragment="show-comments (interactable)">                
                         <div th:each="comment : ${interactable.comments}" class="media mt-2">
                             <div th:switch="${comment.user.profilePhoto}">
@@ -36,13 +35,14 @@
                             </div>                        
                             <div class="media-body">
                                 <a class="link-text" th:href="@{/{username} (username=${comment.user.username})}">
-                                    <p class="lead" th:text="${comment.user.username}"></p>
+                                    <p class="lead mb-1" th:text="${comment.user.username}"></p>
                                 </a>
                                 <p th:text="${comment.text}">comment text</p>
                             </div>
                         </div>
         </div>
         
+        <!---------    Add comment    --------->
         <div th:fragment="add-comment (user, loggedInUser, interactable)">
                         <form th:action="@{/{username}/{interactableId}/{loggedInUser}/comment(username=${user.username}, interactableId=${interactable.Id}, loggedInUser=${loggedInUser.username})}" method="POST">
                             <input type="text" class="form-control" name="text" placeholder="add a comment"/>

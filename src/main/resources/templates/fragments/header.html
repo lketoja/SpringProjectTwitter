@@ -15,7 +15,6 @@
         <div th:fragment="header (user, loggedInUser)">    
             <div class="container-fluid header">
                 <div class="row">
-    <!--            <h5 th:text="'Logged in as ' + ${loggedInUser}"></h5>-->
 
                     <!--    Show profilePhoto    -->
                     <div class="col-md-4">
@@ -34,7 +33,7 @@
                                 <form th:case="false" th:action="@{/{username}/{loggedInUser}/follow-me (username=${user.username}, loggedInUser=${loggedInUser.username})}" method="POST">
                                         <input type="submit" value="Follow!" class="btn btn-dark mt-2 mb-3">
                                 </form>
-                                <form class="block-form" th:case="true" th:action="@{/{username}/{loggedInUser}/dont-follow (username=${user.username}, loggedInUser=${loggedInUser.username})}" method="POST">
+                                <form th:case="true" th:action="@{/{username}/{loggedInUser}/dont-follow (username=${user.username}, loggedInUser=${loggedInUser.username})}" method="POST">
                                         <input type="submit" value="Don't follow!" class="btn btn-dark mt-2 mb-3">
                                 </form>
                             </div>
@@ -52,23 +51,32 @@
 
 
             <!--     Search for users   -->
-            <div class="container-fluid white-area p-3">
+            <div class="container-fluid white-area pt-3 px-3">
 <!--                <div class="etsi p-3">-->
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
 
                         </div>
-                        <div class ="col-md-9">
-                            <form class="form-inline my-2 my-lg-0">
-                                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                            </form>
+                        <div class ="col-md-8">
+                            
+                            <input class="search-input form-control" type="search" placeholder="Search for users" aria-label="Search">
+                            
+                            <div class="all-users mt-3">
+                                <div class="filtered" th:each="user : ${allUsers}">
+                                    <a class="black-link" th:href="@{/{username} (username=${user.username})}">
+                                        <p th:text="${user.username}">username</p>
+                                    </a>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
 <!--                </div>-->
             </div>
         </div>
+        <a class="follow-text" th:href="@{/{username} (username=${followedUserAndTime.user.username})}">
+                                <p class="mb-1" th:text="${followedUserAndTime.user.username}">username</p>
+                            </a>
   
 
     </body>

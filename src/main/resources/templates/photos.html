@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" th:href="@{/styles/styles.css}"/>
+        <script src="https://kit.fontawesome.com/9c3156e679.js" crossorigin="anonymous"></script>
     </head>
     <body class="container-fluid px-5 py-0">
         
@@ -36,11 +37,11 @@
                                 <img th:src="@{/photos/{photoId} (photoId=${interactable.id})}" class="gallery-photo">
                                     
                                 <!-----------   Change profilephoto  ------------>
-                                <form th:if="${user == loggedInUser}" th:action="@{/{loggedInUser}/{photoId}/change-profile-photo (loggedInUser=${loggedInUser},photoId=${interactable.id})}" method="POST">
-                                    <input class="btn btn-primary btn-sm m-3" type="submit" value=" Add to profile photo">
+                                <form th:if="${user == loggedInUser}" th:action="@{/{loggedInUser}/{photoId}/change-profile-photo (loggedInUser=${loggedInUser.username},photoId=${interactable.id})}" method="POST">
+                                    <input class="btn btn-primary btn-sm ml-0 my-2" type="submit" value="profile photo">
                                 </form>
                                 
-                                <p class="lead" th:text="${interactable.description}">description</p>
+                                <p class="lead photo-text" th:text="${interactable.description}">description</p>
                                 
                                 <!-----------   Like / Don't like  ------------>
                                 <div th:replace="fragments/interactable :: like(${interactable.likes})"></div>
@@ -59,17 +60,20 @@
                 </div>
 
                 <!-----------   Add new photos  ------------>
-                <div th:if="${user.username == loggedInUser.username}">
-                    <h3>Add a new photo!</h3>
+                <div th:if="${user.username == loggedInUser.username}" class="container-fluid white-area p-4 mb-3">
+                    <h3 class="heading mb-3">Add a new photo!</h3>
                     <form th:action="@{/{userId}/add-photo (userId=${user.id})}" method="POST" enctype="multipart/form-data">
-                        <input type="file" name="file" />
-                        <input type="text" name="description" placeholder="add description"/>
-                        <input type="submit" value="Add" />            
+                        <input class="mb-3" type="file" name="file" />
+                        <input class="form-control mb-2" type="text" name="description" placeholder="add description"/>
+                        <input class="btn btn-primary" type="submit" value="Add" />            
                     </form>
                 </div>
                 
             </section>
         </section>
+     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>  
         
     </body>
 </html>
