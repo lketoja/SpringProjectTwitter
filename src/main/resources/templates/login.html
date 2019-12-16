@@ -24,7 +24,7 @@
 
             <div class="container-fluid white-area p-5">
                 
-                <h2 class="large-heading mb-3">Sign in</h2>
+                <h2 class="large-heading mb-3">Welcome back!</h2>
         
                 <form th:action="@{/login}" method="POST">
                     <div class="form-group">
@@ -39,14 +39,14 @@
                             <input type="password" id="password" name="password" class="form-control" autofocus>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary mt-2 ml-3">Sign in</button>
+                    <button type="submit" class="btn btn-primary mt-2 ml-3">Log in</button>
                 </form>
                 
                 <div class="mt-5 ">
                     <h3 class="heading ml-3">If you don't have an account, click here to register!</h3>
-                    <form th:action="@{/create-account}" method="POST">
+                    <a th:href="@{/create-account}">
                         <button type="submit" class="btn btn-primary mt-3 ml-3">Register</button>
-                    </form>
+                    </a>
                     
                 </div>
                 

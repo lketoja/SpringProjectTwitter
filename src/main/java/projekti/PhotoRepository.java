@@ -14,9 +14,7 @@ import java.util.List;
  * @author Lotta
  */
 public interface PhotoRepository extends InteractableBaseRepository<Photo>{
-    
-    
-    
+   
     public List<Photo> findByUserId(Long userId);
     
 }

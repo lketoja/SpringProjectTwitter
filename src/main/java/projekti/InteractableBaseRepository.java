@@ -10,7 +10,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 /**
- *
+ * Tämä repositorio osoittautui turhaksi, mutta en jaksanut (uskaltanut) enää
+ * lähteä muuttamaan toimivaa rakennetta.
+ * 
  * @author Lotta
  */
 @NoRepositoryBean

@@ -12,6 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
+ * Tämä luokka sisältää ne kontrollerimetodit, jotka ovat samoja sekä viesteille
+ * että kuville, eli like(), dontLike() ja comment(). Ongelmaksi muodostui se, 
+ * että redirect suunnittelumallin mukaan post pyynnön jälkeen käyttäjä ohjataan 
+ * uudelleen sivulle, mutta nyt ohjauspyynnön osoite riippuu siitä, onko metodin 
+ * kohde kuva vai viesti. Jostain syystä "if(interactable instanceof Photo)" 
+ * ei näytä toimivan. Eli tällä hetkellä kuviin liittyvien muokkausten jälkeen 
+ * käyttäjä ohjataan pääsivulle eikä galleriasivulle.
  *
  * @author Lotta
  */
@@ -35,17 +42,23 @@ public class InteractableController {
         Account currentUser = userRepo.findByUsername(loggedInUser);
         interactable.getLikes().add(currentUser);
         interactableRepo.save(interactable);        
-        return "redirect:/{username}";
+        if(interactable instanceof Photo){
+            return "redirect:/{username}/photos";
+        }
+        return "redirect:/{username}";       
     }
     
     @PostMapping("/{username}/{interactableId}/{loggedInUser}/dont-like")
-    public String DontLike(@PathVariable Long interactableId, @PathVariable String username, 
+    public String dontLike(@PathVariable Long interactableId, @PathVariable String username, 
             @PathVariable String loggedInUser){
         Interactable interactable = interactableRepo.getOne(interactableId);
         Account currentUser = userRepo.findByUsername(loggedInUser);
         interactable.getLikes().remove(currentUser);
-        interactableRepo.save(interactable);        
-        return "redirect:/{username}";
+        interactableRepo.save(interactable);
+        if(interactable instanceof Photo){
+            return "redirect:/{username}/photos";
+        }
+        return "redirect:/{username}";    
     }
     
     @PostMapping("/{username}/{interactableId}/{loggedInUser}/comment")
@@ -56,7 +69,11 @@ public class InteractableController {
         Interactable interactable = interactableRepo.getOne(interactableId);
         interactable.getComments().add(comment);
         interactableRepo.save(interactable);
+        if(interactable instanceof Photo){
+            return "redirect:/{username}/photos";
+        }
         return "redirect:/{username}";
+        
     }
     
 }

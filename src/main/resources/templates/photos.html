@@ -14,16 +14,16 @@
         <div th:replace="fragments/navbar :: navbar (loggedInUser=${loggedInUser})"></div>
         
         <!---------    Header    ---------->
-        <div th:replace="fragments/header :: header(${user}, ${loggedInUser})"></div>  
+        <div th:replace="fragments/header :: header(${user}, ${loggedInUser}, ${allUsers}, ${whoFollowsMe}, ${whoIFollow})"></div>
  
         <section class="row py-4">
             <section class="col-md-4">
                 
                 <!---------    Following    ---------->
-                <div th:replace="fragments/follow:: following(${whoIFollow})"></div>
+                <div th:replace="fragments/follow:: following(${whoIFollowAndTime})"></div>
                 
                 <!---------    Followers    ---------->
-                <div th:replace="fragments/follow:: followers(${whoFollowsMe})"></div>
+                <div th:replace="fragments/follow:: followers(${whoFollowsMeAndTime})"></div>
                 
             </section>
             
@@ -38,16 +38,17 @@
                                     
                                 <!-----------   Change profilephoto  ------------>
                                 <form th:if="${user == loggedInUser}" th:action="@{/{loggedInUser}/{photoId}/change-profile-photo (loggedInUser=${loggedInUser.username},photoId=${interactable.id})}" method="POST">
-                                    <input class="btn btn-primary btn-sm ml-0 my-2" type="submit" value="profile photo">
+                                    <input class="btn btn-primary btn-block btn-sm ml-0 my-2" type="submit" value="profile photo">
                                 </form>
+
+                            </div>
+                            
+                            <div class="col-sm-8">
                                 
                                 <p class="lead photo-text" th:text="${interactable.description}">description</p>
                                 
                                 <!-----------   Like / Don't like  ------------>
                                 <div th:replace="fragments/interactable :: like(${interactable.likes})"></div>
-                            </div>
-                            
-                            <div class="col-sm-8">
                                 
                                 <!-----------   Show comments  ------------>
                                 <div th:replace="fragments/interactable :: show-comments(${interactable})"></div>
@@ -71,7 +72,9 @@
                 
             </section>
         </section>
-     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        
+    <script th:src="@{/javascript/searchUsers.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>  
         

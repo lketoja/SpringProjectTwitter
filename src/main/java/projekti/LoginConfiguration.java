@@ -12,7 +12,9 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- *
+ * We need this class to override Spring Securityn default login page and
+ * create our own login page.
+ * 
  * @author Lotta
  */
 @EnableWebMvc

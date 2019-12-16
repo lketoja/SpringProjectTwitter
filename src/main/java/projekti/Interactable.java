@@ -26,7 +26,11 @@ import lombok.NoArgsConstructor;
 
 
 /**
- *
+ * Tämä luokka on luokkien Message ja Photo yläluokka. Tällä perimisjärjestelyllä 
+ * saadaan vähennettyä toisteista koodia. (Esimerkiksi nyt tarvitaan vain yksi
+ * kontrollerimetodi like() sen sijaan, että tarvittaisiin likeMessage() ja 
+ * likePhoto()
+ * 
  * @author Lotta
  */
 @Entity

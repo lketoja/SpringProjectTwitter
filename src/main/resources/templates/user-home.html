@@ -14,7 +14,7 @@
         <div th:replace="fragments/navbar :: navbar(${loggedInUser})"></div>
         
         <!---------    Header    ---------->
-        <div th:replace="fragments/header :: header(${user}, ${loggedInUser})"></div>
+        <div th:replace="fragments/header :: header(${user}, ${loggedInUser}, ${allUsers}, ${whoFollowsMe}, ${whoIFollow})"></div>
         
         <section class="row py-4">
             <section class="col-md-4">

@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
+ * Ne kontrollerimetodit, jotka ovat samoja sekä viesteille
+ * että kuville, eli like(), dontLike() ja comment(), löytyvät luokasta
+ * InteractableController.
  *
  * @author Lotta
  */

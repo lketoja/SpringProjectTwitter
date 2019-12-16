@@ -11,7 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- *
+ * Controllereiden modeliin oli lisättiin ensin attribuuteiksi "whoIFollow" ja
+ * "whoFollowsMe", jotka olivat Account-olioita sisältäviä listoja. Sitten 
+ * huomattiin, että seuraajien ja seurattavien yhteydessä piti näyttää myös
+ * seurauksen alkamisaika. Niinpä luotiin tämä luokka ja luokka AccountAndFollowTime.
+ * Tämän luokan kaksi metodia siis etsivät WhoFollowsWho tietokantataulusta oikeat
+ * rivit ja muuntavat ne AccountAndFollow-tyyppisiksi olioiksi.
+ * 
  * @author Lotta
  */
 @Service
@@ -38,7 +44,6 @@ public class WhoFollowsWhoService {
         List<AccountAndFollowTime> followersAndTime = new ArrayList<>();
         List<WhoFollowsWho> followersAsWFW = whoFollowsWhoRepo.findByTheOneFollowedId(user.getId());
     
-        
         for (WhoFollowsWho whoFollowsWho : followersAsWFW) {
             AccountAndFollowTime accountAndTime = new AccountAndFollowTime(
                     whoFollowsWho.getFollower(), whoFollowsWho.getStartTime());

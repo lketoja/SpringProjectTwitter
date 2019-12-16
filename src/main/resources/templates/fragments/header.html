@@ -12,7 +12,7 @@
         
        
         
-        <div th:fragment="header (user, loggedInUser)">    
+        <div th:fragment="header (user, loggedInUser, allUsers, whoFollowsMe, whoIFollow)">    
             <div class="container-fluid header">
                 <div class="row">
 
@@ -50,17 +50,16 @@
             </div>
 
 
-            <!--     Search for users   -->
+            <!---------     Search for users   --------->
             <div class="container-fluid white-area pt-3 px-3">
-<!--                <div class="etsi p-3">-->
+
                     <div class="row">
                         <div class="col-md-4">
-
                         </div>
                         <div class ="col-md-8">
-                            
                             <input class="search-input form-control" type="search" placeholder="Search for users" aria-label="Search">
                             
+                            <!---------     Show all users   --------->
                             <div class="all-users mt-3">
                                 <div class="filtered" th:each="user : ${allUsers}">
                                     <a class="black-link" th:href="@{/{username} (username=${user.username})}">
@@ -68,16 +67,11 @@
                                     </a>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-<!--                </div>-->
             </div>
         </div>
-        <a class="follow-text" th:href="@{/{username} (username=${followedUserAndTime.user.username})}">
-                                <p class="mb-1" th:text="${followedUserAndTime.user.username}">username</p>
-                            </a>
-  
+        
 
     </body>
 </html>
