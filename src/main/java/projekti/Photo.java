@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("Photo")
 public class Photo extends Interactable implements Serializable {
    
-    @Lob
+    //@Lob
     private byte[] content;
     
     private String description;

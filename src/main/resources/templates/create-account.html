@@ -8,21 +8,17 @@
         <link rel="stylesheet" type="text/css" th:href="@{/styles/styles.css}"/>
         <script src="https://kit.fontawesome.com/9c3156e679.js" crossorigin="anonymous"></script>
     </head>
-    <body class="container-fluid px-5 py-0">
+    <body class="container-fluid px-5 py-0" style="background-color: #eee;">
         
-      
-        <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-            <a class="navbar-brand">ThumbsUp</a>
-     
-        </nav>
-        
-        <div class="container-fluid header d-flex align-items-center">
-         
-            <h1 class="p-5">Welcome to ThumbsUp!</h1>
-                    
-        </div>
+            <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+                <a class="navbar-brand text-white">ThumbsUp<i class="fa fa-thumbs-up ml-2"></i></a>
+            </nav>
 
-            <div class="container-fluid white-area p-5">
+            <div class="container-fluid header d-flex align-items-center" style="background-color: #53b5b0;">
+                <h1 class="p-5 text-white">Welcome to ThumbsUp!</h1> 
+            </div>
+
+            <div class="container-fluid white-area p-5" style="background-color: #fff;">
                 
                 <h2 class="large-heading mb-3">Create Account</h2>
         
@@ -36,7 +32,7 @@
                     <div class="form-group">
                         <label for="lastName" class="col-sm-3 control-label">Password: </label>
                         <div class="col-sm-9">
-                            <input type="text" name="password" class="form-control" autofocus>
+                            <input type="password" name="password" class="form-control" autofocus>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary mt-2 ml-3">Register</button>
@@ -47,23 +43,13 @@
                     <form th:action="@{/login}" method="POST">
                         <button type="submit" class="btn btn-primary mt-3 ml-3">Sign in!</button>
                     </form>
-                    
                 </div>
-                
-                
-                
-
-                  
+        
             </div>
-        </div>
-   
-        
-        
         
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>   
   
-
     </body>
 </html>
